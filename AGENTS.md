@@ -39,3 +39,17 @@ Docs: https://docs.expo.dev/eas/index.md
 - If `ios/` and `android/` directories do not exist, they are generated (Continuous Native Generation). Never create or edit them by hand — configure native behavior in `app.json` and config plugins.
 - Expo Go only includes its bundled native modules. After adding a library with native code, the app needs a development build: `npx expo run:ios|android` locally, or `eas build --profile development`.
 - Prefer recommended Expo modules over third-party libraries, and check your available skills before adding dependencies. Docs: https://docs.expo.dev/versions/latest/index.md
+
+## Arquitectura TalentVibe (DDD + Atomic Design)
+
+1. **Negocio**: App móvil en Expo Go que analiza la personalidad de creadores de TikTok con el modelo Big Five (OCEAN) para que marcas evalúen compatibilidad, descarten perfiles polémicos y hagan swipe para contratar. Incluye flujo completo de Login, Registro, Logout y vistas por rol (Marca y Creador).
+2. **Extracción Figma MCP**: Usar el fileKey `uo8Zwg8EMhe8CWq1HBwRu2` inspeccionando únicamente los nodos `35-6` (Línea Gráfica) y `0-1` (Prototipo). Prohibido hardcodear o inventar colores, tipografías o medidas; todo token visual debe extraerse dinámicamente mediante el MCP de Figma.
+3. **Estructura DDD** en `src/modules/` con 4 Bounded Contexts independientes:
+   - `auth/` (login, registro, sesión y logout)
+   - `psychometric/` (análisis Big Five OCEAN y nivel de riesgo en TikTok)
+   - `discovery/` (mazo de tarjetas con swipe izquierda/derecha y filtros)
+   - `hiring/` (lista de matches aprobados y propuestas)
+
+   Cada módulo debe tener estrictamente 3 carpetas: `domain/` (cero imports de React/Expo), `application/` (casos de uso) e `infrastructure/` (repositorios mock para Expo Go).
+4. **Capa Visual** en `src/presentation/`: `theme/` (tokens de Figma), `components/atoms/`, `components/molecules/`, `components/organisms/`, `context/` (AuthContext) y `screens/`.
+5. **Flujo de trabajo**: Ejecutar una sola micro-tarea por turno y al finalizar entregar siempre el comando exacto de git commit usando Conventional Commits.
