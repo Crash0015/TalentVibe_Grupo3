@@ -1,12 +1,21 @@
 # TalentVibe · Evaluación psicométrica y contratación de creadores de TikTok
 
 Proyecto de Figma con Metodologia DDD · Ingeniería en Sistemas de Información
-**Repositorio:** [Crash0015/TalentVibe_Grupo3](https://github.com/Crash0015/TalentVibe_Grupo3.git)
-**Diseño en Figma:** [TalentVibe · Línea Gráfica y Prototipo](https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&t=m7U2prMdyCX2bBrd-6)
+**Repositorio:** <a href="https://github.com/Crash0015/TalentVibe_Grupo3.git" target="_blank" rel="noopener noreferrer">Crash0015/TalentVibe_Grupo3</a>
+**Diseño en Figma:** <a href="https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&amp;t=m7U2prMdyCX2bBrd-6" target="_blank" rel="noopener noreferrer">TalentVibe · Línea Gráfica y Prototipo</a>
 
 TalentVibe es una aplicación móvil desarrollada con **Expo + React Native** que permite a las marcas evaluar la compatibilidad psicológica de creadores de TikTok con el modelo **Big Five (OCEAN)** antes de contratarlos. La app analiza cinco rasgos de personalidad, calcula un nivel de riesgo reputacional a partir de señales de controversia y ofrece un sistema de descubrimiento tipo *swipe* para decidir rápido y con evidencia.
 
 El prototipo funciona íntegramente en **Expo Go**, sin backend ni compilación nativa: la autenticación, el análisis psicométrico, el mazo de tarjetas y las propuestas de campaña corren sobre repositorios *mock* persistentes en memoria/AsyncStorage.
+
+## Integrantes del Equipo (Grupo 3)
+
+Proyecto desarrollado por los cuatro integrantes del Grupo 3:
+
+- **Elein Lizeth Inaquiza Mejía**
+- **Dylan Alexander Páez Aguirre**
+- **Cristian Alejandro Pilapanta Valdéz**
+- **Steven Alexander Saragosín Robalino**
 
 ---
 
@@ -73,6 +82,19 @@ Marca                              Creador
   │                                   │
   └──────── contratación ágil ────────┘
 ```
+
+---
+
+## Criterios de Selección del Prototipo
+
+Antes de escribir la primera línea de código, el equipo evaluó varias propuestas visuales. Se seleccionó el archivo **TalentVibe** (`fileKey uo8Zwg8EMhe8CWq1HBwRu2`) por encima de las demás alternativas por cuatro razones determinantes:
+
+- **Separación estricta entre Sistema de Diseño y Prototipo.** El archivo dedica una página exclusiva a la **Línea Gráfica** (nodo `35-6`) y otra al **Prototipo navegable** (nodo `0-1`). Esa división evita estilos dispersos o inconsistentes, establece una única fuente de verdad para los tokens y permite distinguir con claridad qué es reutilizable y qué es composición de producto.
+- **Madurez para Atomic Design.** Los componentes visuales ya estaban conceptualizados bajo jerarquías reutilizables: paleta y roles de color, escalas tipográficas con tracking e interlineado, radios, sombras, átomos (botones, badges, avatares, inputs) y moléculas (tarjeta de candidato, fila Big Five). Eso permitió mapearlos directamente a `src/presentation/components/atoms`, `molecules` y `organisms` sin rediseñar la interfaz ni improvisar variantes.
+- **Integración óptima con el servidor MCP de Figma.** La estructura ordenada por nodos hizo posible que el agente extrajera programáticamente paletas, radios, sombras y medidas exactas, además de las tipografías y sus interlineados. El resultado fue un `theme/` derivado del archivo real, sin valores visuales hardcodeados en pantallas ni componentes.
+- **Alineación natural con Domain-Driven Design (DDD).** Los flujos funcionales del diseño —autenticación por roles, evaluación psicométrica Big Five (OCEAN), descubrimiento tipo swipe y gestión de la contratación— delimitan con claridad cuatro Bounded Contexts independientes (`auth`, `psychometric`, `discovery`, `hiring`). Esa correspondencia entre diseño y dominio hizo viable construir un MVP funcional, mantenible y escalable sobre Expo Go.
+
+En conjunto, el prototipo elegido no solo era el más completo visualmente: su organización interna funcionó como contrato de arquitectura, reduciendo retrabajo y permitiendo avanzar por capas con validación de tipos en cada micro-tarea.
 
 ---
 
@@ -408,5 +430,6 @@ El proyecto no tiene suite de tests ni ESLint configurado todavía; la verificac
 
 ---
 
-**Stack:** Expo SDK 58 · React Native 0.88 · React 19 · TypeScript 6 · AsyncStorage · DDD + Atomic Design
-**Repositorio:** https://github.com/Crash0015/TalentVibe_Grupo3.git
+**Stack:** Expo SDK 58 · React Native 0.88 · React 19 · TypeScript 6 · AsyncStorage · DDD + Atomic Design<br />
+**Repositorio:** <a href="https://github.com/Crash0015/TalentVibe_Grupo3.git" target="_blank" rel="noopener noreferrer">Crash0015/TalentVibe_Grupo3</a><br />
+**Diseño en Figma:** <a href="https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&amp;t=m7U2prMdyCX2bBrd-6" target="_blank" rel="noopener noreferrer">TalentVibe · Línea Gráfica y Prototipo</a>
