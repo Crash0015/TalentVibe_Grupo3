@@ -10,7 +10,7 @@ El prototipo funciona íntegramente en **Expo Go**, sin backend ni compilación 
 
 ## Integrantes del Equipo (Grupo 3)
 
-Proyecto desarrollado por los cuatro integrantes del Grupo 3:
+Nombres de los Integrantes:
 
 - **Elein Lizeth Inaquiza Mejía**
 - **Dylan Alexander Páez Aguirre**
