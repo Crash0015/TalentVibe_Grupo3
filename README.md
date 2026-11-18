@@ -2,6 +2,7 @@
 
 Proyecto de Figma con Metodologia DDD · Ingeniería en Sistemas de Información
 **Repositorio:** [Crash0015/TalentVibe_Grupo3](https://github.com/Crash0015/TalentVibe_Grupo3.git)
+**Diseño en Figma:** [TalentVibe · Línea Gráfica y Prototipo](https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&t=m7U2prMdyCX2bBrd-6)
 
 TalentVibe es una aplicación móvil desarrollada con **Expo + React Native** que permite a las marcas evaluar la compatibilidad psicológica de creadores de TikTok con el modelo **Big Five (OCEAN)** antes de contratarlos. La app analiza cinco rasgos de personalidad, calcula un nivel de riesgo reputacional a partir de señales de controversia y ofrece un sistema de descubrimiento tipo *swipe* para decidir rápido y con evidencia.
 
