@@ -510,14 +510,6 @@ const styles = StyleSheet.create({
     padding: spacing.xxxlWide,
     gap: spacing.xxxlWide,
   },
-  listBody: {
-    flex: 1,
-    paddingHorizontal: spacing.xxxlWide,
-    paddingTop: spacing.xxxlWide,
-  },
-  sectionHeading: {
-    gap: spacing.sm,
-  },
   exploreIntro: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -526,6 +518,14 @@ const styles = StyleSheet.create({
   },
   exploreIntroText: {
     flex: 1,
+    gap: spacing.sm,
+  },
+  listBody: {
+    flex: 1,
+    paddingHorizontal: spacing.xxxlWide,
+    paddingTop: spacing.xxxlWide,
+  },
+  sectionHeading: {
     gap: spacing.sm,
   },
   loading: {
