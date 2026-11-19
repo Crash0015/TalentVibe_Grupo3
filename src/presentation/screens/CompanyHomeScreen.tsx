@@ -383,33 +383,43 @@ const renderExplore = () => (
   };
 
   const renderMatches = () => {
-    if (selectedMatch) {
-      return renderDetail();
-    }
+  if (selectedMatch) {
+    return renderDetail();
+  }
 
-    return (
-      <View style={styles.listBody}>
+  return (
+    <View style={styles.listBody}>
+      <View style={styles.matchesHeading}>
         <View style={styles.sectionHeading}>
-          <AppText variant="screenTitle">Candidatos aprobados</AppText>
+          <AppText variant="screenTitle">
+            Candidatos aprobados
+          </AppText>
+
           <AppText variant="caption" color="textSubtle">
-            Abre un match para ver su Big Five y enviar una propuesta.
+            Consulta los perfiles y revisa su compatibilidad.
           </AppText>
         </View>
 
-        {isLoadingMatches ? (
-          <View style={styles.loading}>
-            <ActivityIndicator color={colors.primary} />
-          </View>
-        ) : (
-          <CandidateList
-            candidates={candidateItems}
-            onSelect={handleSelectCandidate}
-            style={styles.list}
-          />
-        )}
+        <Badge
+          label={`${matches.length} perfiles`}
+          tone="primary"
+        />
       </View>
-    );
-  };
+
+      {isLoadingMatches ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : (
+        <CandidateList
+          candidates={candidateItems}
+          onSelect={handleSelectCandidate}
+          style={styles.list}
+        />
+      )}
+    </View>
+  );
+};
 
   const renderProfile = () => (
     <ScrollView
@@ -524,6 +534,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.xxxlWide,
     paddingTop: spacing.xxxlWide,
+  },
+  matchesHeading: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.xl,
+    marginBottom: spacing.xxxlWide,
   },
   sectionHeading: {
     gap: spacing.sm,
