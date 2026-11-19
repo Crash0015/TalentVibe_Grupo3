@@ -488,6 +488,22 @@ El proyecto no tiene suite de tests ni ESLint configurado todavía; la verificac
 
 ---
 
-**Stack:** Expo SDK 58 · React Native 0.88 · React 19 · TypeScript 6 · AsyncStorage · DDD + Atomic Design<br />
-**Repositorio:** <a href="https://github.com/Crash0015/TalentVibe_Grupo3.git" target="_blank" rel="noopener noreferrer">Crash0015/TalentVibe_Grupo3</a><br />
-**Diseño en Figma:** <a href="https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&amp;t=m7U2prMdyCX2bBrd-6" target="_blank" rel="noopener noreferrer">TalentVibe · Línea Gráfica y Prototipo</a>
+---
+
+## Documentación y recursos del proyecto
+
+En los siguientes enlaces se encuentran los recursos de diseño, documentación técnica y código fuente correspondientes al proyecto TalentVibe.
+
+| Recurso | Descripción |
+|---|---|
+| **Repositorio en GitHub** | Código fuente y estructura del proyecto. |
+| **Diseño en Figma** | Línea gráfica y prototipo de la aplicación móvil. |
+| **Informe del proyecto** | Documento académico con el desarrollo, fundamentos teóricos, análisis del dominio y lenguaje ubicuo, arquitectura y demás aspectos del proyecto. |
+
+- **Repositorio:** [TalentVibe_Grupo3](https://github.com/Crash0015/TalentVibe_Grupo3)
+- **Diseño en Figma:** [TalentVibe · Línea Gráfica y Prototipo](https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&t=m7U2prMdyCX2bBrd-6)
+- **Informe del proyecto (Confluence):** [Consultar informe de TalentVibe](https://dispositivosmobilegrupo3.atlassian.net/wiki/external/MDYyZGZlODMwZjU1NGQ2MmIyMTA4YzA3ZjQ4YTZlZmU)
+
+---
+
+**Stack tecnológico:** Expo SDK 58 · React Native 0.88 · React 19 · TypeScript 6 · AsyncStorage · DDD + Atomic Design.
