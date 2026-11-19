@@ -74,7 +74,7 @@ function InfoRow({ label, value }: { label: string; value: string }) {
  * Home del rol Marca (0:1 · "TalentVibe · Candidatos").
  *
  * Pestañas: Explorar (mazo con swipe), Matches (lista + detalle Big Five +
- * propuesta) y Perfil (datos de la marca y cierre de sesión).
+ * propuesta) y Perfil (datos de la marca y cierre de sesió).
  */
 export function CompanyHomeScreen() {
   const { user, logout } = useAuth();
