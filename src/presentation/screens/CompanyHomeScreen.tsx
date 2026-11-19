@@ -238,28 +238,52 @@ export function CompanyHomeScreen() {
     }
   };
 
-  const renderExplore = () => (
-    <ScrollView
-      style={styles.body}
-      contentContainerStyle={styles.scrollContent}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.sectionHeading}>
-        <AppText variant="screenTitle">Explorar creadores</AppText>
-        <AppText variant="caption" color="textSubtle">
-          Desliza a la derecha para guardar un match.
+const renderExplore = () => (
+  <ScrollView
+    style={styles.body}
+    contentContainerStyle={styles.scrollContent}
+    showsVerticalScrollIndicator={false}
+  >
+    <View style={styles.exploreIntro}>
+      <View style={styles.exploreIntroText}>
+        <AppText variant="caption" color="textSecondary">
+          PANEL DE EMPRESA
+        </AppText>
+
+        <AppText variant="h1">
+          ¡Hola, {user.name}!
+        </AppText>
+
+        <AppText variant="body" color="textSecondary">
+          Descubre creadores y encuentra perfiles que conecten con tu marca.
         </AppText>
       </View>
 
-      {isLoadingDeck ? (
-        <View style={styles.loading}>
-          <ActivityIndicator color={colors.primary} />
-        </View>
-      ) : (
-        <SwipeDeckView candidates={deck} onSwipe={handleSwipe} />
-      )}
-    </ScrollView>
-  );
+      <Badge label="Descubrimiento" tone="primary" />
+    </View>
+
+    <View style={styles.sectionHeading}>
+      <AppText variant="screenTitle">
+        Explorar creadores
+      </AppText>
+
+      <AppText variant="caption" color="textSubtle">
+        Desliza a la derecha para guardar un match.
+      </AppText>
+    </View>
+
+    {isLoadingDeck ? (
+      <View style={styles.loading}>
+        <ActivityIndicator color={colors.primary} />
+      </View>
+    ) : (
+      <SwipeDeckView
+        candidates={deck}
+        onSwipe={handleSwipe}
+      />
+    )}
+  </ScrollView>
+);
 
   const renderDetail = () => {
     if (!selectedMatch) {
@@ -359,33 +383,43 @@ export function CompanyHomeScreen() {
   };
 
   const renderMatches = () => {
-    if (selectedMatch) {
-      return renderDetail();
-    }
+  if (selectedMatch) {
+    return renderDetail();
+  }
 
-    return (
-      <View style={styles.listBody}>
+  return (
+    <View style={styles.listBody}>
+      <View style={styles.matchesHeading}>
         <View style={styles.sectionHeading}>
-          <AppText variant="screenTitle">Candidatos aprobados</AppText>
+          <AppText variant="screenTitle">
+            Candidatos aprobados
+          </AppText>
+
           <AppText variant="caption" color="textSubtle">
-            Abre un match para ver su Big Five y enviar una propuesta.
+            Consulta los perfiles y revisa su compatibilidad.
           </AppText>
         </View>
 
-        {isLoadingMatches ? (
-          <View style={styles.loading}>
-            <ActivityIndicator color={colors.primary} />
-          </View>
-        ) : (
-          <CandidateList
-            candidates={candidateItems}
-            onSelect={handleSelectCandidate}
-            style={styles.list}
-          />
-        )}
+        <Badge
+          label={`${matches.length} perfiles`}
+          tone="primary"
+        />
       </View>
-    );
-  };
+
+      {isLoadingMatches ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : (
+        <CandidateList
+          candidates={candidateItems}
+          onSelect={handleSelectCandidate}
+          style={styles.list}
+        />
+      )}
+    </View>
+  );
+};
 
   const renderProfile = () => (
     <ScrollView
@@ -486,10 +520,27 @@ const styles = StyleSheet.create({
     padding: spacing.xxxlWide,
     gap: spacing.xxxlWide,
   },
+  exploreIntro: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.xl,
+  },
+  exploreIntroText: {
+    flex: 1,
+    gap: spacing.sm,
+  },
   listBody: {
     flex: 1,
     paddingHorizontal: spacing.xxxlWide,
     paddingTop: spacing.xxxlWide,
+  },
+  matchesHeading: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    justifyContent: 'space-between',
+    gap: spacing.xl,
+    marginBottom: spacing.xxxlWide,
   },
   sectionHeading: {
     gap: spacing.sm,
