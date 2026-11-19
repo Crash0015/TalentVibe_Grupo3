@@ -96,6 +96,64 @@ Antes de escribir la primera línea de código, el equipo evaluó varias propues
 
 En conjunto, el prototipo elegido no solo era el más completo visualmente: su organización interna funcionó como contrato de arquitectura, reduciendo retrabajo y permitiendo avanzar por capas con validación de tipos en cada micro-tarea.
 
+## 2.1. Análisis del dominio y lenguaje ubicuo
+
+### Dominio del proyecto
+
+El dominio principal de TalentVibe se centra en la evaluación de compatibilidad entre marcas y creadores de contenido de TikTok, mediante el análisis de características psicométricas y señales de riesgo reputacional. El sistema busca facilitar la selección de creadores que se ajusten a la identidad y los valores de una marca, proporcionando información que apoye el proceso de contratación y colaboración.
+
+Para representar este dominio, TalentVibe utiliza el modelo Big Five (OCEAN), un indicador de afinidad entre perfiles y una valoración heurística del riesgo reputacional. Estos elementos permiten organizar las funcionalidades del sistema de acuerdo con las necesidades del negocio.
+
+
+
+### Lenguaje ubicuo
+
+El lenguaje ubicuo establece un vocabulario compartido entre los integrantes del equipo, el dominio del negocio y la implementación del software. Su finalidad es garantizar que los conceptos utilizados durante el análisis, diseño y desarrollo mantengan un significado consistente, evitando interpretaciones diferentes de una misma funcionalidad.
+
+En TalentVibe, los siguientes términos representan los conceptos principales del dominio:
+
+| Término | Descripción |
+|---|---|
+| **COMPANY** | Usuario que representa a una marca o empresa interesada en contratar creadores de contenido. |
+| **CREATOR** | Usuario que representa a un creador de contenido que busca oportunidades de colaboración con marcas. |
+| **Big Five** | Modelo de personalidad compuesto por cinco dimensiones: apertura, responsabilidad, extraversión, amabilidad y neuroticismo. |
+| **Affinity Score** | Indicador que representa el nivel de compatibilidad entre el perfil de personalidad de una marca y el de un creador. |
+| **Risk Score** | Indicador heurístico que estima el nivel de riesgo reputacional de un creador. |
+| **Discovery** | Proceso mediante el cual una marca explora perfiles de creadores disponibles en la plataforma. |
+| **Swipe** | Acción de deslizar una tarjeta de perfil para expresar interés o descartarla. |
+| **Match** | Coincidencia generada entre una marca y un creador como resultado del proceso de selección. |
+| **Campaign Proposal** | Propuesta de colaboración relacionada con una campaña que una marca envía a un creador. |
+| **Bounded Context** | Límite que delimita un modelo y sus responsabilidades dentro del sistema, manteniendo separados los conceptos de cada área funcional. |
+
+Este vocabulario se utiliza como referencia para mantener la coherencia entre los conceptos del negocio, los nombres de las entidades, las reglas de dominio y la organización del código fuente.
+
+### Reglas de negocio
+
+El funcionamiento de TalentVibe se fundamenta en las siguientes reglas de negocio:
+
+- La compatibilidad entre una marca y un creador se calcula comparando sus cinco dimensiones de personalidad mediante el modelo Big Five.
+- El riesgo reputacional se estima mediante indicadores relacionados con publicaciones señaladas, menciones de controversias, reportes de seguridad de marca y determinadas puntuaciones de personalidad.
+- Los perfiles clasificados con riesgo reputacional alto (`HIGH_RISK`) se excluyen del proceso de descubrimiento por defecto.
+- Las funcionalidades disponibles dentro de la aplicación dependen del rol del usuario (`COMPANY` o `CREATOR`).
+- Las marcas pueden explorar perfiles, expresar interés o descartar candidatos y gestionar propuestas de colaboración.
+
+Estas reglas orientan el comportamiento del sistema y permiten mantener la lógica del negocio independiente de la interfaz de usuario.
+
+### Relación del lenguaje ubicuo con la arquitectura DDD
+
+El lenguaje ubicuo se refleja directamente en la organización del código fuente mediante cuatro Bounded Contexts, cada uno con responsabilidades específicas dentro del dominio de TalentVibe:
+
+| Bounded Context | Responsabilidad | Conceptos relacionados |
+|---|---|---|
+| **auth** | Gestionar la autenticación, el registro y las sesiones de los usuarios. | COMPANY, CREATOR, User, Email. |
+| **psychometric** | Gestionar los perfiles de personalidad, el análisis Big Five, la afinidad y el riesgo reputacional. | Big Five, Affinity Score, Risk Score. |
+| **discovery** | Gestionar la exploración de perfiles, los filtros y las decisiones de selección mediante swipe. | Discovery, Swipe, Candidate. |
+| **hiring** | Gestionar las coincidencias aprobadas y las propuestas de colaboración. | Match, Campaign Proposal. |
+
+Esta separación permite que cada contexto mantenga sus propias responsabilidades y modelos de dominio, facilitando el mantenimiento, la evolución y la comprensión del sistema.
+
+La aplicación de este enfoque permite que el vocabulario del negocio se mantenga alineado con la implementación técnica, fortaleciendo la comunicación entre los integrantes del equipo y la organización del software mediante Domain-Driven Design (DDD).
+
 ---
 
 ## 3. Arquitectura de software: DDD + Atomic Design
