@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   /** Feedback táctil: Figma no define un estado pressed. */
   pressed: {
-    opacity: 0.85,
+    opacity: 0.80,
   },
   disabled: {
     opacity: 0.5,
