@@ -1,3 +1,4 @@
+
 import {
   SafeAreaView,
   ScrollView,
@@ -14,10 +15,10 @@ export interface WelcomeScreenProps {
 }
 
 /**
- * Pantalla de bienvenida (35:6 · "Identidad de TalentVibe").
+ * Pantalla de bienvenida de TalentVibe.
  *
- * Fondo #F9FAFB, logotipo Talent (navy) + Vibe (esmeralda),
- * eyebrow "TALENTO + CULTURA" y titular 43 Regular.
+ * Presenta la propuesta de valor de la plataforma
+ * y permite acceder al inicio de sesión o registro.
  */
 export function WelcomeScreen({ onLogin, onRegister }: WelcomeScreenProps) {
   return (
@@ -39,36 +40,39 @@ export function WelcomeScreen({ onLogin, onRegister }: WelcomeScreenProps) {
           <View style={styles.corporate}>
             <View style={styles.accent} />
             <AppText variant="eyebrow" color="textSecondary">
-              TALENTO + CULTURA
+              INTELIGENCIA DE TALENTO DIGITAL
             </AppText>
           </View>
         </View>
 
         <View style={styles.hero}>
           <AppText variant="brandDisplay" color="textPrimary">
-            Conecta talento con cultura.
+            Conectamos marcas con talento compatible.
           </AppText>
+
           <AppText variant="bodyRelaxed" color="textSecondary">
-            Evaluamos la personalidad de creadores de TikTok con el modelo
-            Big Five (OCEAN) para que tu marca encuentre compatibilidad real y
-            descarte perfiles polémicos.
+            Identificamos afinidades entre marcas y creadores mediante
+            análisis psicométrico basado en el modelo Big Five (OCEAN),
+            facilitando decisiones de colaboración fundamentadas en datos.
           </AppText>
         </View>
 
         <View style={styles.actions}>
           <AppButton
-            label="Iniciar sesión"
+            label="Acceder a la plataforma"
             onPress={onLogin}
             fullWidth
           />
+
           <AppButton
-            label="Crear cuenta"
+            label="Registrar una cuenta"
             variant="secondary"
             onPress={onRegister}
             fullWidth
           />
+
           <AppText variant="caption" color="textSubtle" style={styles.legal}>
-            Proyecto de Titulación · Ingeniería en Sistemas de Información
+            Una plataforma de análisis y conexión de talento digital
           </AppText>
         </View>
       </ScrollView>
