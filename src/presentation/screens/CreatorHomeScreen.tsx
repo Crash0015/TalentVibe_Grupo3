@@ -177,10 +177,15 @@ export function CreatorHomeScreen() {
 
         <View style={styles.syncCard}>
           <View style={styles.syncHeader}>
-            <View style={styles.identity}>
+            <View style={styles.syncTitleBlock}>
+              <AppText variant="caption" color="textSecondary">
+                CONEXIÓN DE CUENTA
+              </AppText>
+
               <AppText variant="sectionTitle">
                 Sincronización con TikTok
               </AppText>
+
               <AppText variant="candidateMeta" color="textSecondary">
                 {user.emailAddress}
               </AppText>
@@ -190,6 +195,13 @@ export function CreatorHomeScreen() {
               label={report ? "Sincronizado" : "Pendiente"}
               tone={report ? "success" : "primary"}
             />
+          </View>
+
+          <View style={styles.syncDescription}>
+            <AppText variant="body" color="textSecondary">
+              Mantén actualizado tu análisis para conocer tu compatibilidad con
+              las marcas.
+            </AppText>
           </View>
 
           <AppButton
@@ -341,6 +353,14 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "space-between",
     gap: spacing.xl,
+  },
+  syncTitleBlock: {
+    flex: 1,
+    gap: spacing.mdInset,
+  },
+
+  syncDescription: {
+    paddingTop: spacing.sm,
   },
   loading: {
     paddingVertical: spacing.canvas,
