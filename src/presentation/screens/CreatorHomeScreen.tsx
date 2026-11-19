@@ -1,16 +1,16 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from "react";
 import {
   ActivityIndicator,
   SafeAreaView,
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
+} from "react-native";
 
-import type { CreatorPsychometricReport } from '../../modules/psychometric/application/CreatorPsychometricReport';
-import { createPsychometricModule } from '../../modules/psychometric/infrastructure/createPsychometricModule';
-import { SAMPLE_BRAND_CULTURE_PROFILE } from '../../modules/psychometric/infrastructure/mockCreatorProfiles';
-import { useAuth } from '../context/AuthContext';
+import type { CreatorPsychometricReport } from "../../modules/psychometric/application/CreatorPsychometricReport";
+import { createPsychometricModule } from "../../modules/psychometric/infrastructure/createPsychometricModule";
+import { SAMPLE_BRAND_CULTURE_PROFILE } from "../../modules/psychometric/infrastructure/mockCreatorProfiles";
+import { useAuth } from "../context/AuthContext";
 import {
   borderWidths,
   colors,
@@ -18,20 +18,20 @@ import {
   radii,
   sizes,
   spacing,
-} from '../theme';
-import { AppButton, AppText, Avatar, Badge } from '../components/atoms';
-import { BigFiveReportCard } from '../components/organisms';
+} from "../theme";
+import { AppButton, AppText, Avatar, Badge } from "../components/atoms";
+import { BigFiveReportCard } from "../components/organisms";
 
-function riskLabel(level: CreatorPsychometricReport['riskLevel']): string {
-  if (level === 'LOW_RISK') {
-    return 'Bajo riesgo';
+function riskLabel(level: CreatorPsychometricReport["riskLevel"]): string {
+  if (level === "LOW_RISK") {
+    return "Bajo riesgo";
   }
 
-  if (level === 'MEDIUM_RISK') {
-    return 'Riesgo medio';
+  if (level === "MEDIUM_RISK") {
+    return "Riesgo medio";
   }
 
-  return 'Alto riesgo';
+  return "Alto riesgo";
 }
 
 /**
@@ -109,7 +109,7 @@ export function CreatorHomeScreen() {
       setError(
         cause instanceof Error
           ? cause.message
-          : 'No pudimos analizar tu perfil de TikTok.',
+          : "No pudimos analizar tu perfil de TikTok.",
       );
     } finally {
       setIsSyncing(false);
@@ -151,13 +151,27 @@ export function CreatorHomeScreen() {
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.profileHeader}>
-          <Avatar name={user.name} size="lg" />
-
-          <View style={styles.identity}>
-            <AppText variant="h1">{user.name}</AppText>
-            <AppText variant="candidateMeta" color="textSecondary">
-              {user.handleOrCompany}
+          <View style={styles.profileIntro}>
+            <AppText variant="caption" color="textSecondary">
+              PANEL DE CREADOR
             </AppText>
+
+            <AppText variant="h1">¡Hola, {user.name}!</AppText>
+
+            <AppText variant="body" color="textSecondary">
+              Gestiona tu perfil y descubre tu compatibilidad con las marcas.
+            </AppText>
+          </View>
+
+          <View style={styles.profileIdentity}>
+            <Avatar name={user.name} size="lg" />
+
+            <View style={styles.identity}>
+              <AppText variant="sectionTitle">{user.name}</AppText>
+              <AppText variant="candidateMeta" color="textSecondary">
+                {user.handleOrCompany}
+              </AppText>
+            </View>
           </View>
         </View>
 
@@ -173,14 +187,14 @@ export function CreatorHomeScreen() {
             </View>
 
             <Badge
-              label={report ? 'Sincronizado' : 'Pendiente'}
-              tone={report ? 'success' : 'primary'}
+              label={report ? "Sincronizado" : "Pendiente"}
+              tone={report ? "success" : "primary"}
             />
           </View>
 
           <AppButton
-            label={report ? 'Volver a analizar' : 'Sincronizar perfil'}
-            variant={report ? 'secondary' : 'primary'}
+            label={report ? "Volver a analizar" : "Sincronizar perfil"}
+            variant={report ? "secondary" : "primary"}
             onPress={handleSync}
             loading={isSyncing}
             fullWidth
@@ -206,7 +220,7 @@ export function CreatorHomeScreen() {
                 </AppText>
                 <AppText variant="statisticLarge" color="success">
                   {report.affinityScore === null
-                    ? '—'
+                    ? "—"
                     : `${report.affinityScore}%`}
                 </AppText>
               </View>
@@ -217,9 +231,7 @@ export function CreatorHomeScreen() {
                 </AppText>
                 <Badge
                   label={riskLabel(report.riskLevel)}
-                  tone={
-                    report.riskLevel === 'LOW_RISK' ? 'success' : 'primary'
-                  }
+                  tone={report.riskLevel === "LOW_RISK" ? "success" : "primary"}
                 />
               </View>
 
@@ -242,8 +254,8 @@ export function CreatorHomeScreen() {
           <View style={styles.emptyCard}>
             <AppText variant="sectionTitle">Aún no hay análisis</AppText>
             <AppText variant="body" color="textSecondary">
-              Sincroniza tu usuario de TikTok para generar tu perfil Big Five
-              y conocer tu compatibilidad con las marcas.
+              Sincroniza tu usuario de TikTok para generar tu perfil Big Five y
+              conocer tu compatibilidad con las marcas.
             </AppText>
           </View>
         )}
@@ -265,22 +277,22 @@ const styles = StyleSheet.create({
     backgroundColor: colors.background,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: spacing.xxxlWide,
     paddingVertical: spacing.xl,
   },
   brandRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: spacing.mdInset,
   },
   brandMark: {
     width: sizes.logoMark,
     height: sizes.logoMark,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     backgroundColor: colors.primary,
     borderRadius: radii.md,
   },
@@ -295,9 +307,22 @@ const styles = StyleSheet.create({
     gap: spacing.xxxlWide,
   },
   profileHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    gap: spacing.xxlWide,
+  },
+
+  profileIntro: {
+    gap: spacing.mdInset,
+  },
+
+  profileIdentity: {
+    flexDirection: "row",
+    alignItems: "center",
     gap: spacing.xlPlus,
+    padding: spacing.xxxlPlus,
+    backgroundColor: colors.surface,
+    borderRadius: radii.lg,
+    borderWidth: borderWidths.hairline,
+    borderColor: colors.border,
   },
   identity: {
     flex: 1,
@@ -312,18 +337,18 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   syncHeader: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
     gap: spacing.xl,
   },
   loading: {
     paddingVertical: spacing.canvas,
-    alignItems: 'center',
+    alignItems: "center",
   },
   reportSummary: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     gap: spacing.xl,
     padding: spacing.xxxlPlus,
     backgroundColor: colors.surface,
