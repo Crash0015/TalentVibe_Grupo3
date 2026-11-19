@@ -11,7 +11,7 @@
 /** Colores brutos tal como aparecen en Figma. */
 export const palette = {
   /** 35:6 · color principal "Azul Marino" (#1E3A8A). */
-  navy: '#1E3A8A',
+  navy: '#0e2c80',
   /** 35:6 · color secundario "Verde Esmeralda" (#10B981), éxito y match. */
   emerald: '#10B981',
   /** 35:6 · "Blanco Puro" (#FFFFFF), superficies de tarjetas. */
