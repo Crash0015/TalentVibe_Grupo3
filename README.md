@@ -12,7 +12,7 @@ El prototipo funciona íntegramente en **Expo Go**, sin backend ni compilación 
 
 Nombres de los Integrantes:
 
-- **Elein Lizeth Inaquiza Mejía**
+- **Elein Lizeth Inaquiza Mejia**
 - **Dylan Alexander Páez Aguirre**
 - **Cristian Alejandro Pilapanta Valdéz**
 - **Steven Alexander Saragosín Robalino**
