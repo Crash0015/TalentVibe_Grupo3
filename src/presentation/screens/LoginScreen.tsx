@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -7,11 +7,11 @@ import {
   ScrollView,
   StyleSheet,
   View,
-} from 'react-native';
+} from "react-native";
 
-import { useAuth } from '../context/AuthContext';
-import { borderWidths, colors, radii, spacing } from '../theme';
-import { AppButton, AppInput, AppText } from '../components/atoms';
+import { useAuth } from "../context/AuthContext";
+import { borderWidths, colors, radii, spacing } from "../theme";
+import { AppButton, AppInput, AppText } from "../components/atoms";
 
 export interface LoginScreenProps {
   onBack: () => void;
@@ -26,12 +26,12 @@ export interface LoginScreenProps {
  */
 export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
   const { login, demoCredentials } = useAuth();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const fillCredentials = (account: 'company' | 'creator') => {
+  const fillCredentials = (account: "company" | "creator") => {
     setEmail(demoCredentials[account].email);
     setPassword(demoCredentials[account].password);
     setError(null);
@@ -47,7 +47,7 @@ export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
       setError(
         cause instanceof Error
           ? cause.message
-          : 'No pudimos iniciar sesión. Inténtalo de nuevo.',
+          : "No pudimos iniciar sesión. Inténtalo de nuevo.",
       );
     } finally {
       setIsSubmitting(false);
@@ -57,7 +57,7 @@ export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
   return (
     <SafeAreaView style={styles.safe}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
         style={styles.flex}
       >
         <ScrollView
@@ -76,10 +76,28 @@ export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
           </Pressable>
 
           <View style={styles.heading}>
-            <AppText variant="h1">Bienvenido de nuevo</AppText>
-            <AppText variant="body" color="textSecondary">
-              Inicia sesión para revisar creadores, matches y propuestas.
-            </AppText>
+            <View style={styles.brand}>
+              <View style={styles.brandMark}>
+                <AppText variant="badge" color="textOnPrimary">
+                  TV
+                </AppText>
+              </View>
+
+              <AppText variant="h2">TalentVibe</AppText>
+            </View>
+
+            <View style={styles.headingText}>
+              <AppText variant="caption" color="textSecondary">
+                TU ESPACIO CREATIVO
+              </AppText>
+
+              <AppText variant="h1">Bienvenido de nuevo</AppText>
+
+              <AppText variant="body" color="textSecondary">
+                Inicia sesión y continúa conectando con oportunidades, creadores
+                y marcas.
+              </AppText>
+            </View>
           </View>
 
           <View style={styles.form}>
@@ -122,13 +140,13 @@ export function LoginScreen({ onBack, onRegister }: LoginScreenProps) {
               <AppButton
                 label="Rellenar marca"
                 variant="secondary"
-                onPress={() => fillCredentials('company')}
+                onPress={() => fillCredentials("company")}
                 style={styles.demoButton}
               />
               <AppButton
                 label="Rellenar creador"
                 variant="secondary"
-                onPress={() => fillCredentials('creator')}
+                onPress={() => fillCredentials("creator")}
                 style={styles.demoButton}
               />
             </View>
@@ -178,17 +196,35 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
   },
   demoButtons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: spacing.xlPlus,
   },
   demoButton: {
     flex: 1,
   },
   footer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
     gap: spacing.lg,
-    marginTop: 'auto',
+    marginTop: "auto",
+  },
+  brand: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: spacing.mdInset,
+  },
+
+  brandMark: {
+    width: 44,
+    height: 44,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.primary,
+    borderRadius: radii.md,
+  },
+
+  headingText: {
+    gap: spacing.md,
   },
 });

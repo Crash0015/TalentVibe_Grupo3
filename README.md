@@ -15,7 +15,7 @@ El prototipo funciona íntegramente en **Expo Go**, sin backend ni compilación 
 | **Cristian Alejandro Pilapanta Valdez** | Arranque en Expo Go, diseño DDD, backend en capas: motor de extraccion, auditoria Benford, Big Five con evidencia y CLI. |
 | **Dylan Alexander Paez Aguirre** | Maquetacion y estilos de *dashboards* de empresa y creador. |
 | **Steven Alexander Saragosin Robalino** | Refinamiento de estilos de componentes reutilizables, tema tipografico y de color, espaciado y alineacion de pantallas, y consistencia de nombres en el proyecto. |
-| **Elein Lizeth Inaquiza Mejia** | Documentacion del proyecto y estructuracion de informes academicos. |
+| **Elein Lizeth Inaquiza Mejia** | Documentacion del proyecto y estructuracion de informes academicos.|
 
 ---
 
