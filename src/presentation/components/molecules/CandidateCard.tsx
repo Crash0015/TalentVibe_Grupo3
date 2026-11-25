@@ -2,6 +2,7 @@ import {
   Pressable,
   StyleSheet,
   View,
+  useWindowDimensions,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -55,6 +56,8 @@ export function CandidateCard({
   style,
 }: CandidateCardProps) {
   const isCompact = variant === 'compact';
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   return (
     <Pressable
@@ -65,6 +68,7 @@ export function CandidateCard({
       style={({ pressed }) => [
         styles.card,
         isCompact ? styles.compactCard : styles.defaultCard,
+        isLandscape && !isCompact ? styles.defaultCardLandscape : null,
         pressed && onPress ? styles.pressed : null,
         style,
       ]}
@@ -138,6 +142,10 @@ const styles = StyleSheet.create({
     padding: spacing.xl,
     borderWidth: borderWidths.hairline,
     borderColor: colors.border,
+  },
+  defaultCardLandscape: {
+    padding: spacing.xlPlus,
+    gap: spacing.xl,
   },
   compactContent: {
     gap: spacing.mdPlus,

@@ -5,6 +5,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from "react-native";
 
 import type { CreatorPsychometricReport } from "../../modules/psychometric/application/CreatorPsychometricReport";
@@ -42,6 +43,8 @@ function riskLabel(level: CreatorPsychometricReport["riskLevel"]): string {
  */
 export function CreatorHomeScreen() {
   const { user, logout } = useAuth();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
   const psychometric = useMemo(() => createPsychometricModule(), []);
 
   const [report, setReport] = useState<CreatorPsychometricReport | null>(null);
@@ -130,7 +133,7 @@ export function CreatorHomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
+      <View style={[styles.header, isLandscape && styles.headerLandscape]}>
         <View style={styles.brandRow}>
           <View style={styles.brandMark}>
             <AppText variant="badge" color="textOnPrimary">
@@ -147,7 +150,11 @@ export function CreatorHomeScreen() {
 
       <ScrollView
         style={styles.body}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          isLandscape && styles.scrollContentLandscape,
+        ]}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
         <View style={styles.profileHeader}>
@@ -301,6 +308,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxxlWide,
     paddingVertical: spacing.xl,
   },
+  headerLandscape: {
+    paddingVertical: spacing.md,
+  },
   brandRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -323,6 +333,13 @@ const styles = StyleSheet.create({
   scrollContent: {
     padding: spacing.xxxlWide,
     gap: spacing.xxxlWide,
+  },
+  scrollContentLandscape: {
+    maxWidth: 960,
+    width: "100%",
+    alignSelf: "center",
+    paddingHorizontal: spacing.canvas,
+    paddingVertical: spacing.xxlWide,
   },
   profileHeader: {
     gap: spacing.xxlWide,

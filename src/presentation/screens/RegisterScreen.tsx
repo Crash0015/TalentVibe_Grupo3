@@ -7,6 +7,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from 'react-native';
 
 import type { UserRole } from '../../modules/auth/domain/User';
@@ -31,12 +32,16 @@ const ROLE_OPTIONS: ReadonlyArray<{ role: UserRole; label: string }> = [
 ];
 
 /**
- * Registro de cuenta con selección de rol (Marca / Creador).
+ * Registro de cuenta con selección de rol.
  *
- * Tras registrarse, el caso de uso abre sesión y `App` navega al home del rol.
+ * El formulario se desplaza en horizontal dentro de una columna propia
+ * para que la pantalla girada no recorte campos.
  */
 export function RegisterScreen({ onBack, onLogin }: RegisterScreenProps) {
   const { register } = useAuth();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   const [role, setRole] = useState<UserRole>('COMPANY');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -71,7 +76,10 @@ export function RegisterScreen({ onBack, onLogin }: RegisterScreenProps) {
         style={styles.flex}
       >
         <ScrollView
-          contentContainerStyle={styles.content}
+          contentContainerStyle={[
+            styles.content,
+            isLandscape && styles.contentLandscape,
+          ]}
           keyboardShouldPersistTaps="handled"
           showsVerticalScrollIndicator={false}
         >
@@ -85,95 +93,107 @@ export function RegisterScreen({ onBack, onLogin }: RegisterScreenProps) {
             </AppText>
           </Pressable>
 
-          <View style={styles.heading}>
-            <AppText variant="h1">Crea tu cuenta</AppText>
-            <AppText variant="body" color="textSecondary">
-              Elige tu rol para ver la experiencia correspondiente en
-              TalentVibe.
-            </AppText>
-          </View>
+          <View
+            style={[styles.columns, isLandscape && styles.columnsLandscape]}
+          >
+            <View style={[styles.column, isLandscape && styles.columnLandscape]}>
+              <View style={styles.heading}>
+                <AppText variant="h1">Crea tu cuenta</AppText>
+                <AppText variant="body" color="textSecondary">
+                  Elige tu rol para ver la experiencia correspondiente en
+                  TalentVibe.
+                </AppText>
+              </View>
 
-          <View style={styles.roleRow}>
-            {ROLE_OPTIONS.map((option) => {
-              const isActive = role === option.role;
+              <View style={styles.roleRow}>
+                {ROLE_OPTIONS.map((option) => {
+                  const isActive = role === option.role;
 
-              return (
-                <Pressable
-                  key={option.role}
-                  onPress={() => setRole(option.role)}
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isActive }}
-                  style={[
-                    styles.roleOption,
-                    isActive ? styles.roleOptionActive : null,
-                  ]}
-                >
-                  <AppText
-                    variant="buttonLabel"
-                    color={isActive ? 'textOnPrimary' : 'textPrimary'}
-                  >
-                    {option.label}
+                  return (
+                    <Pressable
+                      key={option.role}
+                      onPress={() => setRole(option.role)}
+                      accessibilityRole="button"
+                      accessibilityState={{ selected: isActive }}
+                      style={[
+                        styles.roleOption,
+                        isActive ? styles.roleOptionActive : null,
+                      ]}
+                    >
+                      <AppText
+                        variant="buttonLabel"
+                        color={isActive ? 'textOnPrimary' : 'textPrimary'}
+                      >
+                        {option.label}
+                      </AppText>
+                    </Pressable>
+                  );
+                })}
+              </View>
+            </View>
+
+            <View style={[styles.column, isLandscape && styles.columnLandscape]}>
+              <View style={styles.form}>
+                <AppInput
+                  label="Nombre completo"
+                  value={name}
+                  onChangeText={setName}
+                  placeholder="Valentina Rojas"
+                  autoCapitalize="words"
+                />
+                <AppInput
+                  label="Correo"
+                  value={email}
+                  onChangeText={setEmail}
+                  placeholder="tu@correo.com"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  keyboardType="email-address"
+                />
+                <AppInput
+                  label="Contraseña"
+                  value={password}
+                  onChangeText={setPassword}
+                  placeholder="Mínimo 6 caracteres"
+                  secureTextEntry
+                />
+                <AppInput
+                  label={
+                    isCompany ? 'Nombre de la empresa' : 'Usuario de TikTok'
+                  }
+                  value={handleOrCompany}
+                  onChangeText={setHandleOrCompany}
+                  placeholder={
+                    isCompany ? 'Estudio Nova S.A.S.' : '@tuusuario'
+                  }
+                  autoCapitalize="none"
+                />
+
+                {error ? (
+                  <AppText variant="caption" color="textPrimary">
+                    {error}
+                  </AppText>
+                ) : null}
+
+                <AppButton
+                  label="Crear cuenta"
+                  onPress={handleRegister}
+                  loading={isSubmitting}
+                  fullWidth
+                />
+              </View>
+
+              <View style={styles.footer}>
+                <AppText variant="caption" color="textSecondary">
+                  ¿Ya tienes cuenta?
+                </AppText>
+                <Pressable onPress={onLogin} accessibilityRole="button">
+                  <AppText variant="buttonLabel" color="primary">
+                    Iniciar sesión
                   </AppText>
                 </Pressable>
-              );
-            })}
-          </View>
-
-          <View style={styles.form}>
-            <AppInput
-              label="Nombre completo"
-              value={name}
-              onChangeText={setName}
-              placeholder="Valentina Rojas"
-              autoCapitalize="words"
-            />
-            <AppInput
-              label="Correo"
-              value={email}
-              onChangeText={setEmail}
-              placeholder="tu@correo.com"
-              autoCapitalize="none"
-              autoComplete="email"
-              keyboardType="email-address"
-            />
-            <AppInput
-              label="Contraseña"
-              value={password}
-              onChangeText={setPassword}
-              placeholder="Mínimo 6 caracteres"
-              secureTextEntry
-            />
-            <AppInput
-              label={isCompany ? 'Nombre de la empresa' : 'Usuario de TikTok'}
-              value={handleOrCompany}
-              onChangeText={setHandleOrCompany}
-              placeholder={isCompany ? 'Estudio Nova S.A.S.' : '@tuusuario'}
-              autoCapitalize="none"
-            />
-
-            {error ? (
-              <AppText variant="caption" color="textPrimary">
-                {error}
-              </AppText>
-            ) : null}
-
-            <AppButton
-              label="Crear cuenta"
-              onPress={handleRegister}
-              loading={isSubmitting}
-              fullWidth
-            />
-          </View>
-
-          <View style={styles.footer}>
-            <AppText variant="caption" color="textSecondary">
-              ¿Ya tienes cuenta?
-            </AppText>
-            <Pressable onPress={onLogin} accessibilityRole="button">
-              <AppText variant="buttonLabel" color="primary">
-                Iniciar sesión
-              </AppText>
-            </Pressable>
+              </View>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -193,6 +213,27 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     padding: spacing.hugeWide,
     gap: spacing.hugeWide,
+  },
+  contentLandscape: {
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: spacing.canvas,
+    paddingVertical: spacing.xxxlWide,
+  },
+  columns: {
+    flexGrow: 1,
+    gap: spacing.hugeWide,
+  },
+  columnsLandscape: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+  },
+  column: {
+    gap: spacing.hugeWide,
+  },
+  columnLandscape: {
+    flex: 1,
   },
   heading: {
     gap: spacing.md,
@@ -223,6 +264,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: spacing.lg,
-    marginTop: 'auto',
   },
 });

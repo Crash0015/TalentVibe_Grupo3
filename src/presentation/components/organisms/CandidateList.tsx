@@ -1,4 +1,11 @@
-import { FlatList, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  FlatList,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import { fontWeights, spacing } from '../../theme';
 import { AppText } from '../atoms';
@@ -34,8 +41,15 @@ export function CandidateList({
   emptyMessage = 'No hay candidatos con estos filtros.',
   style,
 }: CandidateListProps) {
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+  const numColumns = isLandscape ? 2 : 1;
+
   return (
     <FlatList
+      key={`candidates-${numColumns}`}
+      numColumns={numColumns}
+      columnWrapperStyle={isLandscape ? styles.column : undefined}
       data={[...candidates]}
       keyExtractor={(item) => item.creatorId}
       renderItem={({ item }) => (
@@ -46,9 +60,12 @@ export function CandidateList({
           avatarUri={item.avatarUri}
           handle={item.handle}
           onPress={onSelect ? () => onSelect(item) : undefined}
+          style={isLandscape ? styles.cardLandscape : undefined}
         />
       )}
-      ItemSeparatorComponent={() => <View style={styles.separator} />}
+      ItemSeparatorComponent={
+        isLandscape ? undefined : () => <View style={styles.separator} />
+      }
       ListHeaderComponent={
         <View style={styles.summary}>
           <AppText variant="caption" color="textSubtle">
@@ -74,6 +91,13 @@ export function CandidateList({
 const styles = StyleSheet.create({
   content: {
     paddingBottom: spacing.xxxlWide,
+  },
+  column: {
+    gap: spacing.xlPlus,
+    marginBottom: spacing.xlPlus,
+  },
+  cardLandscape: {
+    flex: 1,
   },
   summary: {
     flexDirection: 'row',
