@@ -194,7 +194,11 @@ export function SwipeDeckView({
         </Animated.View>
 
         <View style={styles.header}>
-          <Avatar name={current.displayName} size="lg" />
+          <Avatar
+            name={current.displayName}
+            handle={current.handle}
+            size="lg"
+          />
 
           <View style={styles.identity}>
             <AppText variant="sectionTitle" color="textPrimary">

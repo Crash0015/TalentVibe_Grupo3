@@ -164,7 +164,11 @@ export function CreatorHomeScreen() {
           </View>
 
           <View style={styles.profileIdentity}>
-            <Avatar name={user.name} size="lg" />
+            <Avatar
+              name={user.name}
+              handle={user.handleOrCompany}
+              size="lg"
+            />
 
             <View style={styles.identity}>
               <AppText variant="sectionTitle">{user.name}</AppText>
@@ -260,6 +264,8 @@ export function CreatorHomeScreen() {
             <BigFiveReportCard
               traits={report.profile}
               title="TU PERFIL BIG FIVE"
+              name={report.displayName}
+              handle={report.handle}
             />
           </>
         ) : (

@@ -1,6 +1,7 @@
 import { FlatList, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 
-import { fontWeights, spacing } from '../../theme';import { AppText } from '../atoms';
+import { fontWeights, spacing } from '../../theme';
+import { AppText } from '../atoms';
 import { CandidateCard } from '../molecules';
 
 export interface CandidateListItem {
@@ -10,6 +11,8 @@ export interface CandidateListItem {
   subtitle: string;
   affinityScore: number;
   avatarUri?: string | null;
+  /** @handle para resolver la foto local del registro de avatares. */
+  handle?: string | null;
 }
 
 export interface CandidateListProps {
@@ -41,6 +44,7 @@ export function CandidateList({
           subtitle={item.subtitle}
           affinityScore={item.affinityScore}
           avatarUri={item.avatarUri}
+          handle={item.handle}
           onPress={onSelect ? () => onSelect(item) : undefined}
         />
       )}

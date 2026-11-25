@@ -26,6 +26,8 @@ export interface CandidateCardProps {
   /** Compatibilidad calculada por psychometric (0-100). */
   affinityScore: number;
   avatarUri?: string | null;
+  /** @handle para resolver la foto local desde el registro de avatares. */
+  handle?: string | null;
   /**
    * `default` = tarjeta del prototipo 0:1 (48px, píldora de match).
    * `compact` = tarjeta del directorio 35:6 (34px, badge "Alto Match").
@@ -47,6 +49,7 @@ export function CandidateCard({
   subtitle,
   affinityScore,
   avatarUri,
+  handle,
   variant = 'default',
   onPress,
   style,
@@ -69,7 +72,7 @@ export function CandidateCard({
       {isCompact ? (
         <View style={styles.compactContent}>
           <View style={styles.identityRow}>
-            <Avatar uri={avatarUri} name={name} size="sm" />
+            <Avatar uri={avatarUri} handle={handle} name={name} size="sm" />
             <View style={styles.compactInfo}>
               <AppText
                 variant="iconLabel"
@@ -92,7 +95,7 @@ export function CandidateCard({
         </View>
       ) : (
         <>
-          <Avatar uri={avatarUri} name={name} size="lg" />
+          <Avatar uri={avatarUri} handle={handle} name={name} size="lg" />
 
           <View style={styles.info}>
             <AppText variant="candidateName" color="textStrong">

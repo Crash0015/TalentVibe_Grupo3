@@ -1,12 +1,15 @@
+import { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
   View,
+  type ImageSourcePropType,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
 
-import { colors, radii, sizes } from '../../theme';
+import { getAvatarSource } from '../../assets/avatarRegistry';
+import { colors, radii, sizes, type ColorName } from '../../theme';
 import { AppText } from './AppText';
 
 export type AvatarSize = 'sm' | 'md' | 'lg';
@@ -23,9 +26,23 @@ const AVATAR_TEXT_VARIANTS = {
   lg: 'body',
 } as const;
 
+const INITIALS_PALETTES: ReadonlyArray<{
+  backgroundColor: string;
+  textColor: ColorName;
+}> = [
+  { backgroundColor: colors.primarySoft, textColor: 'primary' },
+  { backgroundColor: colors.successSoft, textColor: 'successStrong' },
+  { backgroundColor: colors.surfaceTint, textColor: 'primary' },
+  { backgroundColor: colors.surfaceMuted, textColor: 'textSecondary' },
+];
+
 export interface AvatarProps {
-  /** Foto del creador; si falta se muestran iniciales. */
+  /** Foto remota (fallback si no hay `imageSource` ni registro local). */
   uri?: string | null;
+  /** Fuente estática proveniente de `avatarRegistry`. */
+  imageSource?: ImageSourcePropType | null;
+  /** @handle para resolver el avatar local automáticamente. */
+  handle?: string | null;
   name?: string;
   initials?: string;
   size?: AvatarSize;
@@ -54,14 +71,44 @@ function resolveInitials(initials?: string, name?: string): string {
     .toUpperCase();
 }
 
+function hashValue(value: string): number {
+  let hash = 0;
+
+  for (let index = 0; index < value.length; index += 1) {
+    hash = (hash * 31 + value.charCodeAt(index)) >>> 0;
+  }
+
+  return hash;
+}
+
+function sourceKeyOf(source: ImageSourcePropType | null): string {
+  if (source == null) {
+    return 'none';
+  }
+
+  if (typeof source === 'number') {
+    return `asset:${source}`;
+  }
+
+  if (Array.isArray(source)) {
+    return `array:${source.map((item) => item.uri ?? '').join('|')}`;
+  }
+
+  return 'uri' in source ? source.uri ?? 'object' : 'object';
+}
+
 /**
- * Avatar circular.
+ * Avatar circular con foto real o iniciales de respaldo.
  *
- * Medidas de Figma: 34 (wireframe), 44 (átomo / tarjeta) y 48 (prototipo).
- * Fondo #E5E7EB y radio 999.
+ * Resolución de fuente:
+ * `imageSource` → avatar local por `handle` → `uri` remota → iniciales.
+ * Si la imagen falla al cargar, cae automáticamente a las iniciales con
+ * un color determinista derivado del nombre/handle.
  */
 export function Avatar({
   uri,
+  imageSource,
+  handle,
   name,
   initials,
   size = 'md',
@@ -69,29 +116,49 @@ export function Avatar({
   accessibilityLabel,
 }: AvatarProps) {
   const dimension = AVATAR_DIMENSIONS[size];
+  const source =
+    imageSource ?? getAvatarSource(handle) ?? (uri ? { uri } : null);
+  const sourceKey = sourceKeyOf(source);
+  const [failedSourceKey, setFailedSourceKey] = useState<string | null>(null);
+  const showImage = source !== null && failedSourceKey !== sourceKey;
+
+  useEffect(() => {
+    setFailedSourceKey(null);
+  }, [sourceKey]);
+
+  const palette =
+    INITIALS_PALETTES[
+      hashValue(name ?? handle ?? initials ?? 'avatar') %
+        INITIALS_PALETTES.length
+    ];
 
   return (
     <View
       accessible
       accessibilityRole="image"
-      accessibilityLabel={accessibilityLabel ?? name ?? 'Avatar'}
+      accessibilityLabel={accessibilityLabel ?? name ?? handle ?? 'Avatar'}
       style={[
         styles.base,
-        { width: dimension, height: dimension },
+        {
+          width: dimension,
+          height: dimension,
+          backgroundColor: palette.backgroundColor,
+        },
         style,
       ]}
     >
-      {uri ? (
+      {showImage && source ? (
         <Image
-          source={{ uri }}
+          source={source}
           resizeMode="cover"
           accessible={false}
           style={styles.image}
+          onError={() => setFailedSourceKey(sourceKey)}
         />
       ) : (
         <AppText
           variant={AVATAR_TEXT_VARIANTS[size]}
-          color="textSecondary"
+          color={palette.textColor}
         >
           {resolveInitials(initials, name)}
         </AppText>
@@ -105,7 +172,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
-    backgroundColor: colors.border,
     borderRadius: radii.full,
   },
   image: {

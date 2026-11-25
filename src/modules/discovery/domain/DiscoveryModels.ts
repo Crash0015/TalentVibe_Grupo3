@@ -26,6 +26,10 @@ export interface DiscoveryCandidate {
   affinityScore: number;
   riskLevel: DiscoveryRiskLevel;
   traits: DiscoveryTraits;
+  /** Ruta local versionada de la foto (assets/avatars/...), si existe. */
+  localAvatar?: string | null;
+  /** URL pública original de TikTok, usada como fallback remoto. */
+  avatarUrl?: string | null;
 }
 
 /** Filtros básicos del mazo. */

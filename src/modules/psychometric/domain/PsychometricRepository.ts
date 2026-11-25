@@ -12,6 +12,10 @@ export interface CreatorPsychometricRecord {
   displayName: string;
   profile: BigFiveProfile;
   signals: TikTokRiskSignals;
+  /** Ruta local versionada de la foto (assets/avatars/...), si existe. */
+  localAvatar?: string | null;
+  /** URL pública original de TikTok, usada como fallback remoto. */
+  avatarUrl?: string | null;
   /** ISO-8601 de la última actualización del perfil. */
   updatedAt: string;
 }
