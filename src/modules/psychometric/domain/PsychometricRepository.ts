@@ -12,6 +12,14 @@ export interface CreatorPsychometricRecord {
   displayName: string;
   profile: BigFiveProfile;
   signals: TikTokRiskSignals;
+  /** Bio pública usada por la búsqueda de marcas. */
+  bio?: string | null;
+  /** `influencer` o `regular`, según el dataset. */
+  accountType?: string | null;
+  followersCount?: number;
+  followingCount?: number;
+  likesCount?: number;
+  videosCount?: number;
   /** Ruta local versionada de la foto (assets/avatars/...), si existe. */
   localAvatar?: string | null;
   /** URL pública original de TikTok, usada como fallback remoto. */

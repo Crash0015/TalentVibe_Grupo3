@@ -38,6 +38,7 @@ export interface SendProposalInput {
 export interface HiringRepository {
   listMatches(): Promise<Match[]>;
   findMatch(creatorId: string): Promise<Match | null>;
+  saveMatch(match: Match): Promise<Match>;
   saveProposal(proposal: CampaignProposal): Promise<CampaignProposal>;
   listProposals(): Promise<CampaignProposal[]>;
 }

@@ -5,6 +5,8 @@ export type {
   CandidateCardProps,
   CandidateCardVariant,
 } from './CandidateCard';
+export { CreatorSearchResult } from './CreatorSearchResult';
+export type { CreatorSearchResultProps } from './CreatorSearchResult';
 export { MatchStat } from './MatchStat';
 export type { MatchStatProps } from './MatchStat';
 export { SearchBar } from './SearchBar';

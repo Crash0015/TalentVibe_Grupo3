@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -17,6 +17,7 @@ import type { Match } from '../../modules/hiring/domain/HiringModels';
 import { createHiringModule } from '../../modules/hiring/infrastructure/createHiringModule';
 import type { CreatorPsychometricReport } from '../../modules/psychometric/application/CreatorPsychometricReport';
 import { createPsychometricModule } from '../../modules/psychometric/infrastructure/createPsychometricModule';
+import { SAMPLE_BRAND_CULTURE_PROFILE } from '../../modules/psychometric/infrastructure/mockCreatorProfiles';
 import { useAuth } from '../context/AuthContext';
 import {
   borderWidths,
@@ -36,6 +37,10 @@ import {
   type TabId,
   type TabItem,
 } from '../components/organisms';
+import {
+  CreatorSearchResult,
+  SearchBar,
+} from '../components/molecules';
 
 type CompanyTab = Extract<TabId, 'discovery' | 'matches' | 'profile'>;
 
@@ -45,7 +50,7 @@ const COMPANY_TABS: readonly TabItem[] = [
   { id: 'profile', label: 'Perfil' },
 ];
 
-function riskLabel(level: Match['riskLevel']): string {
+function riskLabel(level: CreatorPsychometricReport['riskLevel']): string {
   if (level === 'LOW_RISK') {
     return 'Bajo riesgo';
   }
@@ -55,6 +60,22 @@ function riskLabel(level: Match['riskLevel']): string {
   }
 
   return 'Alto riesgo';
+}
+
+function formatCount(value: number): string {
+  if (value >= 1_000_000_000) {
+    return `${(value / 1_000_000_000).toFixed(1).replace('.0', '')}B`;
+  }
+
+  if (value >= 1_000_000) {
+    return `${(value / 1_000_000).toFixed(1).replace('.0', '')}M`;
+  }
+
+  if (value >= 1_000) {
+    return `${(value / 1_000).toFixed(1).replace('.0', '')}K`;
+  }
+
+  return `${value}`;
 }
 
 function InfoRow({ label, value }: { label: string; value: string }) {
@@ -71,10 +92,10 @@ function InfoRow({ label, value }: { label: string; value: string }) {
 }
 
 /**
- * Home del rol Marca (0:1 · "TalentVibe · Candidatos").
+ * Home del rol Marca.
  *
- * Pestañas: Explorar (mazo con swipe), Matches (lista + detalle Big Five +
- * propuesta) y Perfil (datos de la marca y cierre de sesió).
+ * Explorar mantiene el mazo; la búsqueda superior consulta el repositorio
+ * completo, incluidos perfiles ya swipeados o fuera de los filtros actuales.
  */
 export function CompanyHomeScreen() {
   const { user, logout } = useAuth();
@@ -87,13 +108,18 @@ export function CompanyHomeScreen() {
   const [isLoadingDeck, setIsLoadingDeck] = useState(true);
   const [matches, setMatches] = useState<Match[]>([]);
   const [isLoadingMatches, setIsLoadingMatches] = useState(true);
-  const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
-  const [report, setReport] = useState<CreatorPsychometricReport | null>(null);
-  const [isLoadingReport, setIsLoadingReport] = useState(false);
+  const [detail, setDetail] = useState<CreatorPsychometricReport | null>(null);
+  const [isLoadingDetail, setIsLoadingDetail] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<
+    CreatorPsychometricReport[]
+  >([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [campaignName, setCampaignName] = useState('');
   const [message, setMessage] = useState('');
   const [proposalFeedback, setProposalFeedback] = useState<string | null>(null);
   const [isSendingProposal, setIsSendingProposal] = useState(false);
+  const detailRequestId = useRef(0);
 
   useEffect(() => {
     let isActive = true;
@@ -147,42 +173,101 @@ export function CompanyHomeScreen() {
     };
   }, [hiring]);
 
+  useEffect(() => {
+    const query = searchQuery.trim();
+
+    if (!query) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    let isActive = true;
+    setIsSearching(true);
+
+    psychometric.searchCreators
+      .execute({ query, targetProfile: SAMPLE_BRAND_CULTURE_PROFILE })
+      .then((results) => {
+        if (isActive) {
+          setSearchResults(results);
+        }
+      })
+      .catch(() => {
+        if (isActive) {
+          setSearchResults([]);
+        }
+      })
+      .finally(() => {
+        if (isActive) {
+          setIsSearching(false);
+        }
+      });
+
+    return () => {
+      isActive = false;
+    };
+  }, [psychometric, searchQuery]);
+
   const openMatch = useCallback(
     async (match: Match) => {
-      setSelectedMatch(match);
-      setReport(null);
+      const requestId = detailRequestId.current + 1;
+      detailRequestId.current = requestId;
+
+      setDetail(null);
       setProposalFeedback(null);
       setCampaignName('');
       setMessage('');
-      setIsLoadingReport(true);
+      setIsLoadingDetail(true);
 
       try {
-        const detail = await psychometric.getCreatorReport.execute(
-          match.creatorId,
-        );
-        setReport(detail);
+        const report = await psychometric.analyzeCreator.execute({
+          handle: match.handle,
+          targetProfile: SAMPLE_BRAND_CULTURE_PROFILE,
+        });
+
+        if (detailRequestId.current === requestId) {
+          setDetail(report);
+        }
       } catch {
-        setReport(null);
+        if (detailRequestId.current === requestId) {
+          setDetail(null);
+        }
       } finally {
-        setIsLoadingReport(false);
+        if (detailRequestId.current === requestId) {
+          setIsLoadingDetail(false);
+        }
       }
     },
     [psychometric],
   );
+
+  const closeDetail = () => {
+    detailRequestId.current += 1;
+    setDetail(null);
+    setIsLoadingDetail(false);
+  };
+
+  const openSearchResult = (report: CreatorPsychometricReport) => {
+    detailRequestId.current += 1;
+    setDetail(report);
+    setProposalFeedback(null);
+    setCampaignName('');
+    setMessage('');
+  };
 
   const handleSwipe = useCallback(
     (direction: SwipeDirection, candidate: DiscoveryCandidate) => {
       discovery.swipe
         .execute({ creatorId: candidate.creatorId, direction })
         .catch(() => {
-          // El mock no falla; se ignora para no bloquear el mazo.
+          // El mock no falla; no bloqueamos el mazo por un swipe.
         });
     },
     [discovery],
   );
 
   const handleSendProposal = async () => {
-    if (!selectedMatch) {
+    if (!detail) {
       return;
     }
 
@@ -190,14 +275,28 @@ export function CompanyHomeScreen() {
     setProposalFeedback(null);
 
     try {
+      // Un perfil buscado puede no venir del mazo: lo aprobamos al proponer.
+      await hiring.ensureMatch.execute({
+        creatorId: detail.creatorId,
+        displayName: detail.displayName,
+        handle: detail.handle,
+        affinityScore: detail.affinityScore ?? 0,
+        riskLevel: detail.riskLevel,
+        approvedAt: new Date().toISOString(),
+      });
+
       await hiring.sendProposal.execute({
-        creatorId: selectedMatch.creatorId,
+        creatorId: detail.creatorId,
         campaignName,
         message,
       });
+
       setProposalFeedback('Propuesta enviada. El creador podrá revisarla.');
       setCampaignName('');
       setMessage('');
+
+      const updatedMatches = await hiring.getApprovedMatches.execute();
+      setMatches(updatedMatches);
     } catch (cause) {
       setProposalFeedback(
         cause instanceof Error
@@ -239,55 +338,116 @@ export function CompanyHomeScreen() {
     }
   };
 
-const renderExplore = () => (
-  <ScrollView
-    style={styles.body}
-    contentContainerStyle={styles.scrollContent}
-    showsVerticalScrollIndicator={false}
-  >
-    <View style={styles.exploreIntro}>
-      <View style={styles.exploreIntroText}>
-        <AppText variant="caption" color="textSecondary">
-          PANEL DE EMPRESA
-        </AppText>
+  const renderExplore = () => (
+    <ScrollView
+      style={styles.body}
+      contentContainerStyle={styles.scrollContent}
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.exploreIntro}>
+        <View style={styles.exploreIntroText}>
+          <AppText variant="caption" color="textSecondary">
+            PANEL DE EMPRESA
+          </AppText>
 
-        <AppText variant="h1">
-          ¡Hola, {user.name}!
-        </AppText>
+          <AppText variant="h1">¡Hola, {user.name}!</AppText>
 
-        <AppText variant="body" color="textSecondary">
-          Descubre creadores y encuentra perfiles que conecten con tu marca.
+          <AppText variant="body" color="textSecondary">
+            Descubre creadores y encuentra perfiles que conecten con tu marca.
+          </AppText>
+        </View>
+
+        <Badge label="Descubrimiento" tone="primary" />
+      </View>
+
+      <View style={styles.sectionHeading}>
+        <AppText variant="screenTitle">Explorar creadores</AppText>
+
+        <AppText variant="caption" color="textSubtle">
+          Desliza a la derecha para guardar un match.
         </AppText>
       </View>
 
-      <Badge label="Descubrimiento" tone="primary" />
-    </View>
+      {isLoadingDeck ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : (
+        <SwipeDeckView candidates={deck} onSwipe={handleSwipe} />
+      )}
+    </ScrollView>
+  );
 
-    <View style={styles.sectionHeading}>
-      <AppText variant="screenTitle">
-        Explorar creadores
-      </AppText>
+  const renderSearchResults = () => (
+    <ScrollView
+      style={styles.body}
+      contentContainerStyle={styles.scrollContent}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+    >
+      <View style={styles.matchesHeading}>
+        <View style={styles.sectionHeading}>
+          <AppText variant="screenTitle">Búsqueda global</AppText>
 
-      <AppText variant="caption" color="textSubtle">
-        Desliza a la derecha para guardar un match.
-      </AppText>
-    </View>
+          <AppText variant="caption" color="textSubtle">
+            {isSearching
+              ? 'Buscando perfiles...'
+              : `${searchResults.length} perfiles encontrados`}
+          </AppText>
+        </View>
 
-    {isLoadingDeck ? (
-      <View style={styles.loading}>
-        <ActivityIndicator color={colors.primary} />
+        <Badge label="Todos" tone="primary" />
       </View>
-    ) : (
-      <SwipeDeckView
-        candidates={deck}
-        onSwipe={handleSwipe}
-      />
-    )}
-  </ScrollView>
-);
+
+      {isSearching ? (
+        <View style={styles.loading}>
+          <ActivityIndicator color={colors.primary} />
+        </View>
+      ) : searchResults.length > 0 ? (
+        <View style={styles.searchResults}>
+          {searchResults.map((report) => (
+            <CreatorSearchResult
+              key={report.creatorId}
+              displayName={report.displayName}
+              handle={report.handle}
+              bio={report.bio}
+              accountType={report.accountType}
+              followersCount={report.followersCount}
+              likesCount={report.likesCount}
+              affinityScore={report.affinityScore}
+              onPress={() => openSearchResult(report)}
+            />
+          ))}
+        </View>
+      ) : (
+        <AppText variant="body" color="textSecondary" style={styles.empty}>
+          No encontramos perfiles con ese texto.
+        </AppText>
+      )}
+    </ScrollView>
+  );
 
   const renderDetail = () => {
-    if (!selectedMatch) {
+    if (isLoadingDetail && !detail) {
+      return (
+        <ScrollView
+          style={styles.body}
+          contentContainerStyle={styles.scrollContent}
+        >
+          <Pressable onPress={closeDetail} accessibilityRole="button">
+            <AppText variant="buttonLabel" color="primary">
+              Volver
+            </AppText>
+          </Pressable>
+
+          <View style={styles.loading}>
+            <ActivityIndicator color={colors.primary} />
+          </View>
+        </ScrollView>
+      );
+    }
+
+    if (!detail) {
       return null;
     }
 
@@ -295,34 +455,32 @@ const renderExplore = () => (
       <ScrollView
         style={styles.body}
         contentContainerStyle={styles.scrollContent}
+        keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Pressable
-          onPress={() => setSelectedMatch(null)}
-          accessibilityRole="button"
-        >
+        <Pressable onPress={() => setDetail(null)} accessibilityRole="button">
           <AppText variant="buttonLabel" color="primary">
-            Volver a matches
+            Volver
           </AppText>
         </Pressable>
 
         <View style={styles.detailHeader}>
           <Avatar
-            name={selectedMatch.displayName}
-            handle={selectedMatch.handle}
+            name={detail.displayName}
+            handle={detail.handle}
             size="lg"
           />
 
           <View style={styles.detailIdentity}>
-            <AppText variant="h1">{selectedMatch.displayName}</AppText>
+            <AppText variant="h1">{detail.displayName}</AppText>
             <AppText variant="candidateMeta" color="textSecondary">
-              {selectedMatch.handle}
+              {detail.handle}
             </AppText>
           </View>
 
           <View style={styles.detailScore}>
             <AppText variant="statisticLarge" color="success">
-              {`${selectedMatch.affinityScore}%`}
+              {`${detail.affinityScore ?? 0}%`}
             </AppText>
             <AppText variant="badge" color="success">
               Match
@@ -332,31 +490,20 @@ const renderExplore = () => (
 
         <View style={styles.badgeRow}>
           <Badge
-            label={riskLabel(selectedMatch.riskLevel)}
-            tone={
-              selectedMatch.riskLevel === 'LOW_RISK' ? 'success' : 'primary'
-            }
+            label={riskLabel(detail.riskLevel)}
+            tone={detail.riskLevel === 'LOW_RISK' ? 'success' : 'primary'}
           />
           <AppText variant="caption" color="textSubtle">
-            {`Aprobado el ${selectedMatch.approvedAt.slice(0, 10)}`}
+            {detail.accountType === 'influencer' ? 'Influencer' : 'Creador'} ·{' '}
+            {`${formatCount(detail.followersCount)} seguidores`}
           </AppText>
         </View>
 
-        {isLoadingReport ? (
-          <View style={styles.loading}>
-            <ActivityIndicator color={colors.primary} />
-          </View>
-        ) : report ? (
-          <BigFiveReportCard
-            traits={report.profile}
-            name={report.displayName}
-            handle={report.handle}
-          />
-        ) : (
-          <AppText variant="body" color="textSecondary">
-            No se pudo cargar el reporte psicométrico.
-          </AppText>
-        )}
+        <BigFiveReportCard
+          traits={detail.profile}
+          name={detail.displayName}
+          handle={detail.handle}
+        />
 
         <View style={styles.proposalCard}>
           <AppText variant="sectionTitle">Enviar propuesta</AppText>
@@ -391,28 +538,18 @@ const renderExplore = () => (
     );
   };
 
-  const renderMatches = () => {
-  if (selectedMatch) {
-    return renderDetail();
-  }
-
-  return (
+  const renderMatches = () => (
     <View style={styles.listBody}>
       <View style={styles.matchesHeading}>
         <View style={styles.sectionHeading}>
-          <AppText variant="screenTitle">
-            Candidatos aprobados
-          </AppText>
+          <AppText variant="screenTitle">Candidatos aprobados</AppText>
 
           <AppText variant="caption" color="textSubtle">
             Consulta los perfiles y revisa su compatibilidad.
           </AppText>
         </View>
 
-        <Badge
-          label={`${matches.length} perfiles`}
-          tone="primary"
-        />
+        <Badge label={`${matches.length} perfiles`} tone="primary" />
       </View>
 
       {isLoadingMatches ? (
@@ -428,7 +565,6 @@ const renderExplore = () => (
       )}
     </View>
   );
-};
 
   const renderProfile = () => (
     <ScrollView
@@ -438,6 +574,7 @@ const renderExplore = () => (
     >
       <View style={styles.profileHeader}>
         <Avatar name={user.name} size="lg" />
+
         <View style={styles.detailIdentity}>
           <AppText variant="h1">{user.name}</AppText>
           <AppText variant="candidateMeta" color="textSecondary">
@@ -461,6 +598,8 @@ const renderExplore = () => (
     </ScrollView>
   );
 
+  const showSearch = Boolean(searchQuery.trim());
+
   return (
     <SafeAreaView style={styles.safe}>
       <View style={styles.header}>
@@ -478,15 +617,32 @@ const renderExplore = () => (
         <Badge label="EMPRESAS" tone="primary" />
       </View>
 
-      {tab === 'discovery' ? renderExplore() : null}
-      {tab === 'matches' ? renderMatches() : null}
-      {tab === 'profile' ? renderProfile() : null}
+      {detail || isLoadingDetail ? null : (
+        <View style={styles.searchContainer}>
+          <SearchBar
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            placeholder="Buscar por @usuario, nombre o bio"
+          />
+        </View>
+      )}
+
+      {detail || isLoadingDetail
+        ? renderDetail()
+        : showSearch
+          ? renderSearchResults()
+          : tab === 'discovery'
+            ? renderExplore()
+            : tab === 'matches'
+              ? renderMatches()
+              : renderProfile()}
 
       <BottomTabBar
         activeTab={tab}
         tabs={COMPANY_TABS}
         onTabPress={(nextTab) => {
-          setSelectedMatch(null);
+          setSearchQuery('');
+          closeDetail();
           setTab(nextTab as CompanyTab);
         }}
       />
@@ -522,6 +678,10 @@ const styles = StyleSheet.create({
   brandName: {
     fontWeight: fontWeights.bold,
   },
+  searchContainer: {
+    paddingHorizontal: spacing.xxxlWide,
+    paddingBottom: spacing.xl,
+  },
   body: {
     flex: 1,
   },
@@ -553,6 +713,13 @@ const styles = StyleSheet.create({
   },
   sectionHeading: {
     gap: spacing.sm,
+  },
+  searchResults: {
+    gap: spacing.xlPlus,
+  },
+  empty: {
+    paddingVertical: spacing.canvas,
+    textAlign: 'center',
   },
   loading: {
     paddingVertical: spacing.canvas,
