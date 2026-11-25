@@ -1,8 +1,7 @@
 import { PsychometricAnalysis } from '../../psychometric/domain/PsychometricAnalysis';
-import {
-  MOCK_CREATOR_PROFILES,
-  SAMPLE_BRAND_CULTURE_PROFILE,
-} from '../../psychometric/infrastructure/mockCreatorProfiles';
+import type { CreatorPsychometricRecord } from '../../psychometric/domain/PsychometricRepository';
+import { SAMPLE_BRAND_CULTURE_PROFILE } from '../../psychometric/infrastructure/mockCreatorProfiles';
+import { SCRAPED_CREATOR_RECORDS } from '../../psychometric/infrastructure/tiktokHeuristics';
 import type {
   DiscoveryCandidate,
   DiscoveryRepository,
@@ -10,11 +9,14 @@ import type {
 } from '../domain/DiscoveryModels';
 
 /**
- * Reutiliza los perfiles mock de `psychometric` y calcula afinidad/riesgo
- * con las reglas puras del dominio, sin duplicar datos.
+ * Construye el mazo desde el mismo dataset real de TikTok que usa
+ * `psychometric` (20 perfiles de Ecuador). La afinidad y el riesgo se
+ * calculan con las reglas puras del dominio, no en la infraestructura.
  */
-export function buildDiscoveryCandidates(): DiscoveryCandidate[] {
-  return MOCK_CREATOR_PROFILES.map((record) => {
+export function buildDiscoveryCandidates(
+  records: readonly CreatorPsychometricRecord[] = SCRAPED_CREATOR_RECORDS,
+): DiscoveryCandidate[] {
+  return records.map((record) => {
     const analysis = PsychometricAnalysis.create({
       creatorId: record.creatorId,
       profile: record.profile,
