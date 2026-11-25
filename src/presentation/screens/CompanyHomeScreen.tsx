@@ -6,6 +6,7 @@ import {
   ScrollView,
   StyleSheet,
   View,
+  useWindowDimensions,
 } from 'react-native';
 
 import type {
@@ -99,6 +100,8 @@ function InfoRow({ label, value }: { label: string; value: string }) {
  */
 export function CompanyHomeScreen() {
   const { user, logout } = useAuth();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
   const discovery = useMemo(() => createDiscoveryModule(), []);
   const hiring = useMemo(() => createHiringModule(), []);
   const psychometric = useMemo(() => createPsychometricModule(), []);
@@ -341,7 +344,11 @@ export function CompanyHomeScreen() {
   const renderExplore = () => (
     <ScrollView
       style={styles.body}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={[
+        styles.scrollContent,
+        isLandscape && styles.scrollContentLandscape,
+      ]}
+      keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.exploreIntro}>
@@ -381,7 +388,10 @@ export function CompanyHomeScreen() {
   const renderSearchResults = () => (
     <ScrollView
       style={styles.body}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={[
+        styles.scrollContent,
+        isLandscape && styles.scrollContentLandscape,
+      ]}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
@@ -432,7 +442,11 @@ export function CompanyHomeScreen() {
       return (
         <ScrollView
           style={styles.body}
-          contentContainerStyle={styles.scrollContent}
+          contentContainerStyle={[
+            styles.scrollContent,
+            isLandscape && styles.scrollContentLandscape,
+          ]}
+          keyboardShouldPersistTaps="handled"
         >
           <Pressable onPress={closeDetail} accessibilityRole="button">
             <AppText variant="buttonLabel" color="primary">
@@ -454,11 +468,14 @@ export function CompanyHomeScreen() {
     return (
       <ScrollView
         style={styles.body}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[
+          styles.scrollContent,
+          isLandscape && styles.scrollContentLandscape,
+        ]}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        <Pressable onPress={() => setDetail(null)} accessibilityRole="button">
+        <Pressable onPress={closeDetail} accessibilityRole="button">
           <AppText variant="buttonLabel" color="primary">
             Volver
           </AppText>
@@ -539,7 +556,7 @@ export function CompanyHomeScreen() {
   };
 
   const renderMatches = () => (
-    <View style={styles.listBody}>
+    <View style={[styles.listBody, isLandscape && styles.listBodyLandscape]}>
       <View style={styles.matchesHeading}>
         <View style={styles.sectionHeading}>
           <AppText variant="screenTitle">Candidatos aprobados</AppText>
@@ -569,7 +586,11 @@ export function CompanyHomeScreen() {
   const renderProfile = () => (
     <ScrollView
       style={styles.body}
-      contentContainerStyle={styles.scrollContent}
+      contentContainerStyle={[
+        styles.scrollContent,
+        isLandscape && styles.scrollContentLandscape,
+      ]}
+      keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.profileHeader}>
@@ -602,7 +623,7 @@ export function CompanyHomeScreen() {
 
   return (
     <SafeAreaView style={styles.safe}>
-      <View style={styles.header}>
+      <View style={[styles.header, isLandscape && styles.headerLandscape]}>
         <View style={styles.brandRow}>
           <View style={styles.brandMark}>
             <AppText variant="badge" color="textOnPrimary">
@@ -618,7 +639,12 @@ export function CompanyHomeScreen() {
       </View>
 
       {detail || isLoadingDetail ? null : (
-        <View style={styles.searchContainer}>
+        <View
+          style={[
+            styles.searchContainer,
+            isLandscape && styles.searchContainerLandscape,
+          ]}
+        >
           <SearchBar
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -662,6 +688,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxxlWide,
     paddingVertical: spacing.xl,
   },
+  headerLandscape: {
+    paddingVertical: spacing.md,
+  },
   brandRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -682,12 +711,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xxxlWide,
     paddingBottom: spacing.xl,
   },
+  searchContainerLandscape: {
+    paddingBottom: spacing.md,
+  },
   body: {
     flex: 1,
   },
   scrollContent: {
     padding: spacing.xxxlWide,
     gap: spacing.xxxlWide,
+  },
+  scrollContentLandscape: {
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: spacing.canvas,
+    paddingVertical: spacing.xxlWide,
   },
   exploreIntro: {
     flexDirection: 'row',
@@ -703,6 +742,13 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: spacing.xxxlWide,
     paddingTop: spacing.xxxlWide,
+  },
+  listBodyLandscape: {
+    maxWidth: 960,
+    width: '100%',
+    alignSelf: 'center',
+    paddingHorizontal: spacing.canvas,
+    paddingTop: spacing.xxlWide,
   },
   matchesHeading: {
     flexDirection: 'row',

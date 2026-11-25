@@ -61,7 +61,8 @@ export function SwipeDeckView({
   onSwipe,
   style,
 }: SwipeDeckViewProps) {
-  const { width } = useWindowDimensions();
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
   const [index, setIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
   const position = useRef(new Animated.ValueXY()).current;
@@ -161,11 +162,14 @@ export function SwipeDeckView({
   }
 
   return (
-    <View style={[styles.container, style]}>
+    <View
+      style={[styles.container, isLandscape && styles.containerLandscape, style]}
+    >
       <Animated.View
         {...panResponder.panHandlers}
         style={[
           styles.card,
+          isLandscape && styles.cardLandscape,
           {
             transform: [
               { translateX: position.x },
@@ -229,18 +233,26 @@ export function SwipeDeckView({
           </AppText>
         </View>
 
-        <View style={styles.traits}>
+        <View
+          style={[styles.traits, isLandscape && styles.traitsLandscape]}
+        >
           {TRAIT_ROWS.map((trait) => (
-            <BigFiveTraitRow
+            <View
               key={trait.key}
-              label={trait.label}
-              value={current.traits[trait.key]}
-            />
+              style={isLandscape ? styles.traitLandscape : undefined}
+            >
+              <BigFiveTraitRow
+                label={trait.label}
+                value={current.traits[trait.key]}
+              />
+            </View>
           ))}
         </View>
       </Animated.View>
 
-      <View style={styles.actions}>
+      <View
+        style={[styles.actions, isLandscape && styles.actionsLandscape]}
+      >
         <AppButton
           label="Descartar"
           variant="secondary"
@@ -263,6 +275,9 @@ const styles = StyleSheet.create({
   container: {
     gap: spacing.xxxlWide,
   },
+  containerLandscape: {
+    gap: spacing.xlPlus,
+  },
   card: {
     gap: spacing.xxlWide,
     padding: spacing.xxxlPlus,
@@ -270,6 +285,13 @@ const styles = StyleSheet.create({
     borderWidth: borderWidths.hairline,
     borderColor: colors.border,
     borderRadius: radii.xl,
+  },
+  cardLandscape: {
+    maxWidth: 720,
+    width: '100%',
+    alignSelf: 'center',
+    padding: spacing.xxlWide,
+    gap: spacing.xl,
   },
   header: {
     flexDirection: 'row',
@@ -293,6 +315,14 @@ const styles = StyleSheet.create({
   traits: {
     gap: spacing.xlWide,
   },
+  traitsLandscape: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xlPlus,
+  },
+  traitLandscape: {
+    width: '48%',
+  },
   overlay: {
     position: 'absolute',
     top: spacing.huge,
@@ -307,6 +337,11 @@ const styles = StyleSheet.create({
   actions: {
     flexDirection: 'row',
     gap: spacing.xlPlus,
+  },
+  actionsLandscape: {
+    maxWidth: 720,
+    width: '100%',
+    alignSelf: 'center',
   },
   actionButton: {
     flex: 1,

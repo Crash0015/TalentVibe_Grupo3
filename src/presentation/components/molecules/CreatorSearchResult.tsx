@@ -2,6 +2,7 @@ import {
   Pressable,
   StyleSheet,
   View,
+  useWindowDimensions,
   type StyleProp,
   type ViewStyle,
 } from 'react-native';
@@ -60,6 +61,8 @@ export function CreatorSearchResult({
   style,
 }: CreatorSearchResultProps) {
   const isInfluencer = accountType === 'influencer';
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   return (
     <Pressable
@@ -69,6 +72,7 @@ export function CreatorSearchResult({
       accessibilityLabel={`${displayName}, ${handle}`}
       style={({ pressed }) => [
         styles.card,
+        isLandscape && styles.cardLandscape,
         pressed && onPress ? styles.pressed : null,
         style,
       ]}
@@ -137,6 +141,9 @@ const styles = StyleSheet.create({
     borderWidth: borderWidths.hairline,
     borderColor: colors.border,
     borderRadius: radii.lg,
+  },
+  cardLandscape: {
+    padding: spacing.xl,
   },
   content: {
     flex: 1,

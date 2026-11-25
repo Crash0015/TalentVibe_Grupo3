@@ -1,6 +1,7 @@
 import {
   StyleSheet,
   View,
+  useWindowDimensions,
   type ImageSourcePropType,
   type StyleProp,
   type ViewStyle,
@@ -61,9 +62,13 @@ export function BigFiveReportCard({
   style,
 }: BigFiveReportCardProps) {
   const showIdentity = Boolean(name || handle || imageSource);
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
 
   return (
-    <View style={[styles.card, style]}>
+    <View
+      style={[styles.card, isLandscape && styles.cardLandscape, style]}
+    >
       {showIdentity ? (
         <View style={styles.header}>
           <Avatar
@@ -97,13 +102,17 @@ export function BigFiveReportCard({
         </AppText>
       )}
 
-      <View style={styles.traits}>
+      <View style={[styles.traits, isLandscape && styles.traitsLandscape]}>
         {TRAIT_ROWS.map((trait) => (
-          <BigFiveTraitRow
+          <View
             key={trait.key}
-            label={trait.label}
-            value={traits[trait.key]}
-          />
+            style={isLandscape ? styles.traitLandscape : undefined}
+          >
+            <BigFiveTraitRow
+              label={trait.label}
+              value={traits[trait.key]}
+            />
+          </View>
         ))}
       </View>
     </View>
@@ -119,6 +128,9 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     borderRadius: radii.lg,
   },
+  cardLandscape: {
+    padding: spacing.xxlWide,
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -130,5 +142,13 @@ const styles = StyleSheet.create({
   },
   traits: {
     gap: spacing.xlWide,
+  },
+  traitsLandscape: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.xlPlus,
+  },
+  traitLandscape: {
+    width: '48%',
   },
 });

@@ -1,4 +1,11 @@
-import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  View,
+  useWindowDimensions,
+  type StyleProp,
+  type ViewStyle,
+} from 'react-native';
 
 import {
   borderWidths,
@@ -89,8 +96,11 @@ export function BottomTabBar({
   tabs = DEFAULT_TABS,
   style,
 }: BottomTabBarProps) {
+  const { width, height } = useWindowDimensions();
+  const isLandscape = width > height;
+
   return (
-    <View style={[styles.bar, style]}>
+    <View style={[styles.bar, isLandscape && styles.barLandscape, style]}>
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
         const color = isActive ? colors.primary : colors.textSubtle;
@@ -127,6 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.surface,
     borderTopWidth: borderWidths.hairline,
     borderTopColor: colors.border,
+  },
+  barLandscape: {
+    height: sizes.button + spacing.xlPlus,
   },
   item: {
     flex: 1,
