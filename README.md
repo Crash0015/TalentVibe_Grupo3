@@ -504,7 +504,7 @@ En los siguientes enlaces se encuentran los recursos de diseño, documentación 
 - **Repositorio:** [TalentVibe_Grupo3](https://github.com/Crash0015/TalentVibe_Grupo3)
 - **Diseño en Figma:** [TalentVibe · Línea Gráfica y Prototipo](https://www.figma.com/design/uo8Zwg8EMhe8CWq1HBwRu2/TalentVibe?m=auto&t=m7U2prMdyCX2bBrd-6)
 - **Informe del proyecto (Confluence):** [Consultar informe de TalentVibe](https://dispositivosmobilegrupo3.atlassian.net/wiki/external/MDYyZGZlODMwZjU1NGQ2MmIyMTA4YzA3ZjQ4YTZlZmU)
-- **Presentación del proyecto:** [Consultar presentación de TalentVibe](https://alex217.atlassian.net/wiki/x/AQAL) 
+- **Presentación del proyecto:** [Consultar presentación de TalentVibe](https://alex217.atlassian.net/wiki/external/NTJjYTZhNDgxOGE3NGYyNzg2YzM1YjdlODBiOTM1MTk) 
 - **JIRA:** [TalentVibe_Grupo3 - Actividades](https://alex217.atlassian.net/jira/software/projects/STK/list?jql=project+%3D+STK+ORDER+BY+cf%5B10019%5D+ASC&atlOrigin=eyJpIjoiZGJkYzA2MzQ5YjU5NDFjNWEyODFkZTIxNmRhZTI5NjQiLCJwIjoiaiJ9)
 - 
 
