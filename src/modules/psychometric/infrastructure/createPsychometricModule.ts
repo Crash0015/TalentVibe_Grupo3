@@ -1,5 +1,6 @@
 import { AnalyzeTikTokCreatorUseCase } from '../application/AnalyzeTikTokCreatorUseCase';
 import { GetCreatorPsychometricReportUseCase } from '../application/GetCreatorPsychometricReportUseCase';
+import { SearchCreatorsUseCase } from '../application/SearchCreatorsUseCase';
 import type { PsychometricRepository } from '../domain/PsychometricRepository';
 import { JsonPsychometricRepository } from './JsonPsychometricRepository';
 
@@ -8,6 +9,7 @@ export interface PsychometricModule {
   repository: PsychometricRepository;
   analyzeCreator: AnalyzeTikTokCreatorUseCase;
   getCreatorReport: GetCreatorPsychometricReportUseCase;
+  searchCreators: SearchCreatorsUseCase;
 }
 
 /**
@@ -24,5 +26,6 @@ export function createPsychometricModule(
     repository,
     analyzeCreator: new AnalyzeTikTokCreatorUseCase(repository),
     getCreatorReport: new GetCreatorPsychometricReportUseCase(repository),
+    searchCreators: new SearchCreatorsUseCase(repository),
   };
 }

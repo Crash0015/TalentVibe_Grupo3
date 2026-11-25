@@ -304,6 +304,12 @@ export function buildScrapedCreatorRecords(
         displayName: profile.displayName?.trim() || normalizeHandle(profile.handle),
         profile: BigFiveProfile.create(toBigFiveTraits(ocean)),
         signals: deriveTikTokRiskSignals(profile),
+        bio: profile.bio ?? '',
+        accountType: profile.accountType ?? 'regular',
+        followersCount: toCount(profile.followersCount),
+        followingCount: toCount(profile.followingCount),
+        likesCount: toCount(profile.likesCount),
+        videosCount: toCount(profile.videosCount),
         localAvatar: profile.localAvatar?.trim() || null,
         avatarUrl: profile.avatarUrl?.trim() || null,
         updatedAt:

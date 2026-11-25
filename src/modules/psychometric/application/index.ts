@@ -8,3 +8,5 @@ export {
 } from './CreatorPsychometricReport';
 export type { CreatorPsychometricReport } from './CreatorPsychometricReport';
 export { GetCreatorPsychometricReportUseCase } from './GetCreatorPsychometricReportUseCase';
+export { SearchCreatorsUseCase } from './SearchCreatorsUseCase';
+export type { SearchCreatorsRequest } from './SearchCreatorsUseCase';

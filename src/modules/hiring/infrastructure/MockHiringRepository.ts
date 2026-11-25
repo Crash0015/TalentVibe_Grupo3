@@ -59,6 +59,11 @@ export class MockHiringRepository implements HiringRepository {
     return this.matches.get(creatorId.trim()) ?? null;
   }
 
+  async saveMatch(match: Match): Promise<Match> {
+    this.matches.set(match.creatorId, match);
+    return match;
+  }
+
   async saveProposal(proposal: CampaignProposal): Promise<CampaignProposal> {
     this.proposals.push(proposal);
     return proposal;

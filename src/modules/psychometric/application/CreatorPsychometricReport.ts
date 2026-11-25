@@ -19,6 +19,12 @@ export interface CreatorPsychometricReport {
   /** `null` cuando la marca no envió su perfil cultural objetivo. */
   affinityScore: number | null;
   signals: TikTokRiskSignals;
+  bio: string;
+  accountType: string;
+  followersCount: number;
+  followingCount: number;
+  likesCount: number;
+  videosCount: number;
   /** Ruta local de la foto (assets/avatars/...); puede ser `null`. */
   localAvatar: string | null;
   /** URL remota original de TikTok; puede ser `null`. */
@@ -47,6 +53,12 @@ export function buildCreatorPsychometricReport(
         ? null
         : analysis.calculateAffinity(targetProfile),
     signals: analysis.signals,
+    bio: record.bio ?? '',
+    accountType: record.accountType ?? 'regular',
+    followersCount: record.followersCount ?? 0,
+    followingCount: record.followingCount ?? 0,
+    likesCount: record.likesCount ?? 0,
+    videosCount: record.videosCount ?? 0,
     localAvatar: record.localAvatar ?? null,
     avatarUrl: record.avatarUrl ?? null,
     updatedAt: record.updatedAt,
