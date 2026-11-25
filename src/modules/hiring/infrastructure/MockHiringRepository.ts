@@ -1,21 +1,17 @@
+import type { CreatorPsychometricRecord } from '../../psychometric/domain/PsychometricRepository';
 import { PsychometricAnalysis } from '../../psychometric/domain/PsychometricAnalysis';
-import {
-  MOCK_CREATOR_PROFILES,
-  SAMPLE_BRAND_CULTURE_PROFILE,
-} from '../../psychometric/infrastructure/mockCreatorProfiles';
+import { SAMPLE_BRAND_CULTURE_PROFILE } from '../../psychometric/infrastructure/mockCreatorProfiles';
+import { SCRAPED_CREATOR_RECORDS } from '../../psychometric/infrastructure/tiktokHeuristics';
 import type {
   CampaignProposal,
   HiringRepository,
   Match,
 } from '../domain/HiringModels';
 
-function toMatch(handle: string, approvedAt: string): Match {
-  const record = MOCK_CREATOR_PROFILES.find((item) => item.handle === handle);
-
-  if (!record) {
-    throw new Error(`No existe el perfil mock ${handle}.`);
-  }
-
+function toMatch(
+  record: CreatorPsychometricRecord,
+  approvedAt: string,
+): Match {
   const analysis = PsychometricAnalysis.create({
     creatorId: record.creatorId,
     profile: record.profile,
@@ -32,11 +28,19 @@ function toMatch(handle: string, approvedAt: string): Match {
   };
 }
 
-/** Matches aprobados de ejemplo, derivados de los perfiles psicométricos. */
-export const SEED_MATCHES: readonly Match[] = [
-  toMatch('@diegolopez', '2026-11-14T10:00:00.000Z'),
-  toMatch('@sofiamartinez', '2026-11-14T10:05:00.000Z'),
+const SEED_APPROVED_AT = [
+  '2026-11-25T20:30:00.000Z',
+  '2026-11-25T20:31:00.000Z',
 ];
+
+/**
+ * Matches aprobados de ejemplo, derivados del mismo dataset real de TikTok
+ * que usa psychometric (los dos primeros perfiles del JSON).
+ */
+export const SEED_MATCHES: readonly Match[] = SCRAPED_CREATOR_RECORDS.slice(
+  0,
+  2,
+).map((record, index) => toMatch(record, SEED_APPROVED_AT[index]));
 
 /** Repositorio mock en memoria para Expo Go. */
 export class MockHiringRepository implements HiringRepository {

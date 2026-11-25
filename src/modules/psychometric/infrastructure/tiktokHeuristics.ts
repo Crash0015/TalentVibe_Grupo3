@@ -304,6 +304,8 @@ export function buildScrapedCreatorRecords(
         displayName: profile.displayName?.trim() || normalizeHandle(profile.handle),
         profile: BigFiveProfile.create(toBigFiveTraits(ocean)),
         signals: deriveTikTokRiskSignals(profile),
+        localAvatar: profile.localAvatar?.trim() || null,
+        avatarUrl: profile.avatarUrl?.trim() || null,
         updatedAt:
           profile.scrapedAt?.trim() || new Date(0).toISOString(),
       };

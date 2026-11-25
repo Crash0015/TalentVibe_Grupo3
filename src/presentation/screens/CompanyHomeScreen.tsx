@@ -226,6 +226,7 @@ export function CompanyHomeScreen() {
     name: match.displayName,
     subtitle: match.handle,
     affinityScore: match.affinityScore,
+    handle: match.handle,
   }));
 
   const handleSelectCandidate = (item: CandidateListItem) => {
@@ -306,7 +307,11 @@ const renderExplore = () => (
         </Pressable>
 
         <View style={styles.detailHeader}>
-          <Avatar name={selectedMatch.displayName} size="lg" />
+          <Avatar
+            name={selectedMatch.displayName}
+            handle={selectedMatch.handle}
+            size="lg"
+          />
 
           <View style={styles.detailIdentity}>
             <AppText variant="h1">{selectedMatch.displayName}</AppText>
@@ -342,7 +347,11 @@ const renderExplore = () => (
             <ActivityIndicator color={colors.primary} />
           </View>
         ) : report ? (
-          <BigFiveReportCard traits={report.profile} />
+          <BigFiveReportCard
+            traits={report.profile}
+            name={report.displayName}
+            handle={report.handle}
+          />
         ) : (
           <AppText variant="body" color="textSecondary">
             No se pudo cargar el reporte psicométrico.

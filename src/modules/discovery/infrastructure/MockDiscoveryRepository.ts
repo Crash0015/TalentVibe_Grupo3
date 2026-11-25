@@ -30,6 +30,8 @@ export function buildDiscoveryCandidates(
       affinityScore: analysis.calculateAffinity(SAMPLE_BRAND_CULTURE_PROFILE),
       riskLevel: analysis.riskLevel,
       traits: analysis.profile.toPrimitives(),
+      localAvatar: record.localAvatar ?? null,
+      avatarUrl: record.avatarUrl ?? null,
     };
   });
 }
